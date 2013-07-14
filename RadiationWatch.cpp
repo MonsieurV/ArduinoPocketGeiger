@@ -153,8 +153,8 @@ void RadiationWatch::loop()
     
     //Initialization for next 10000 loops
     _prevTime = currTime;
-    signCount=0;
-    noiseCount=0;
+    signCount = 0;
+    noiseCount = 0;
   }
   
   index++;
@@ -170,14 +170,14 @@ void RadiationWatch::printStatus()
     
   //Elapsed time of measurement (max=20min.)
   double min = cpmTimeSec / 60.0;
-  if(min!=0)
+  if(min != 0)
   {
     //Calculate cpm, uSv/h and error of uSv/h
     dtostrf(cpm / min, -1, 3, cpmBuff);
     dtostrf(cpm / min / alpha, -1, 3, uSvBuff);
     dtostrf(sqrt(cpm) / min / alpha, -1, 3, uSvdBuff);
   }else{
-    //Devision by zero
+    //Division by zero
     dtostrf(0, -1, 3, cpmBuff);
     dtostrf(0, -1, 3, uSvBuff);
     dtostrf(0, -1, 3, uSvdBuff);
