@@ -104,7 +104,7 @@ void RadiationWatch::loop()
         cpmIndexPrev = totalSec;
         cpmIndex++;
         
-        if(cpmIndex >= RadiationWatch::kHistoryCount)
+        if(cpmIndex >= kHistoryCount)
         {
           cpmIndex = 0;
         }
