@@ -3,37 +3,6 @@
 // URL http://www.radiation-watch.org/
 //////////////////////////////////////////////////
 
-const double alpha=53.032; // cpm = uSv x alpha
-
-int index=0; //Number of loops
-char msg[256]=""; //Message buffer for serial output
-
-int signCount=0;  //Counter for Radiation Pulse
-int noiseCount=0;  //Counter for Noise Pulse
-
-int sON=0;//Lock flag for Radiation Pulse
-int nON=0;//Lock flag for Noise Puls
-
-double cpm = 0; //Count rate [cpm] of current
-int cpmIndex=0;//Position of current count rate on cpmHistory[]
-int cpmIndexPrev=0;//Flag to prevent duplicative counting
-
-//Timing Settings for Loop Interval
-int currTime=0; 
-
-int totalSec=0; //Elapsed time of measurement [sec]
-int totalHour=0; //Elapsed time of measurement [hour]
-
-//Time settings for CPM calcuaration
-int cpmTimeMSec=0;
-int cpmTimeSec=0;
-int cpmTimeMin=0;
-
-//String buffers of float values for serial output
-char cpmBuff[20];
-char uSvBuff[20];
-char uSvdBuff[20];
-
 class RadiationWatch
 {
   public:
@@ -47,22 +16,73 @@ class RadiationWatch
     int signPin();
     int noisePin();
   
+  private:
     static const unsigned int kHistoryCount = 200;
 
     double _cpmHistory[kHistoryCount]; //History of count rates
     
     int _prevTime;
 
-  private:
     int _signPin;   //Radiation Pulse (Yellow)
     int _noisePin;  //Vibration Noise Pulse (White)
+
+    static const double alpha=53.032; // cpm = uSv x alpha
     
-  
+    int index; //Number of loops
+    char msg[256]; //Message buffer for serial output
+    
+    int signCount;  //Counter for Radiation Pulse
+    int noiseCount;  //Counter for Noise Pulse
+    
+    int sON;//Lock flag for Radiation Pulse
+    int nON;//Lock flag for Noise Puls
+    
+    double cpm; //Count rate [cpm] of current
+    int cpmIndex;//Position of current count rate on cpmHistory[]
+    int cpmIndexPrev;//Flag to prevent duplicative counting
+    
+    //Timing Settings for Loop Interval
+    int currTime; 
+    
+    int totalSec; //Elapsed time of measurement [sec]
+    int totalHour; //Elapsed time of measurement [hour]
+    
+    //Time settings for CPM calcuaration
+    int cpmTimeMSec;
+    int cpmTimeSec;
+    int cpmTimeMin;
+    
+    //String buffers of float values for serial output
+    char cpmBuff[20];
+    char uSvBuff[20];
+    char uSvdBuff[20];
 };
 
 RadiationWatch::RadiationWatch(int signPin, int noisePin) : _signPin(signPin), _noisePin(noisePin)
 {
   _prevTime = 0;
+  index = 0;
+  
+  msg[0] = 0;
+  
+  signCount=0;
+  noiseCount=0;
+  
+  sON=0;
+  nON=0;
+  
+  cpm = 0;
+  cpmIndex = 0;
+  cpmIndexPrev = 0;
+  
+  currTime = 0;
+  
+  totalSec = 0;
+  totalHour = 0;
+  
+  cpmTimeMSec = 0;
+  cpmTimeSec = 0;
+  cpmTimeMin = 0;
 }
 
 void RadiationWatch::setup()
@@ -78,7 +98,7 @@ void RadiationWatch::setup()
   //Initialize cpmHistory[]
   for(int i=0; i < kHistoryCount;i++ )
   {
-    _cpmHistory[i]=0;
+    _cpmHistory[i] = 0;
   }
   
   _prevTime = millis();
@@ -100,31 +120,13 @@ int RadiationWatch::noisePin()
   return digitalRead(_noisePin);
 }
 
-RadiationWatch radiationWatch(2, 5);
-
-
-
-void setup()
-{
-  //Serial setup
-  //9600bps
-  Serial.begin(9600);
-  
-  radiationWatch.setup();
-
-  radiationWatch.printKey();
-  
-  //Get start time of a loop
-  
-}
-
-void loop()
+void RadiationWatch::loop()
 {
   // Raw data of Radiation Pulse: Not-detected -> High, Detected -> Low
-  int sign = radiationWatch.signPin();
+  int sign = signPin();
 
   // Raw data of Noise Pulse: Not-detected -> Low, Detected -> High
-  int noise = radiationWatch.noisePin();
+  int noise = noisePin();
 
   //Radiation Pulse normally keeps low for about 100[usec]
   if(sign==0 && sON==0)
@@ -164,20 +166,20 @@ void loop()
           cpmIndex = 0;
         }
         
-        if(radiationWatch._cpmHistory[cpmIndex] > 0)
+        if(_cpmHistory[cpmIndex] > 0)
         {
-          cpm -= radiationWatch._cpmHistory[cpmIndex];
+          cpm -= _cpmHistory[cpmIndex];
         }
-        radiationWatch._cpmHistory[cpmIndex]=0;
+        _cpmHistory[cpmIndex]=0;
       }
       
       //Store count log
-      radiationWatch._cpmHistory[cpmIndex] += signCount;
+      _cpmHistory[cpmIndex] += signCount;
       //Add number of counts
       cpm += signCount;
       
       //Get ready time for 10000 loops
-      cpmTimeMSec += abs(currTime - prevTime);
+      cpmTimeMSec += abs(currTime - _prevTime);
       //Transform from msec. to sec. (to prevent overflow)
       if(cpmTimeMSec >= 1000)
       {
@@ -217,12 +219,12 @@ void loop()
         
       //Create message for serial port
       sprintf(msg, "%d,%d.%03d,%d,%s,%s,%s",
-      totalHour,totalSec,
-      cpmTimeMSec,
-      signCount,
-      cpmBuff,
-      uSvBuff,
-      uSvdBuff
+        totalHour,totalSec,
+        cpmTimeMSec,
+        signCount,
+        cpmBuff,
+        uSvBuff,
+        uSvdBuff
         );
         
       //Send message to serial port
@@ -232,11 +234,29 @@ void loop()
     }
     
     //Initialization for next 10000 loops
-    prevTime = currTime;
+    _prevTime = currTime;
     signCount=0;
     noiseCount=0;
   }
   index++;
+}
+
+RadiationWatch radiationWatch(2, 5);
+
+void setup()
+{
+  //Serial setup
+  //9600bps
+  Serial.begin(9600);
+  
+  radiationWatch.setup();
+
+  radiationWatch.printKey();
+}
+
+void loop()
+{
+  radiationWatch.loop();
 }
 
 
