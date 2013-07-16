@@ -14,14 +14,13 @@ class RadiationWatch
     void setup();
     void loop();
     
-    void printKey();
-  
     int signPin();
     int noisePin();
     
-    void printStatus();
+    virtual void printKey();
+    virtual void printStatus();
   
-  private:
+  protected:
     static const unsigned int kHistoryCount = 200;
 
     double _cpmHistory[kHistoryCount]; //History of count rates
@@ -51,6 +50,15 @@ class RadiationWatch
     //Time settings for CPM calcuaration
     int cpmTimeMSec;
     int cpmTimeSec;
+};
+
+class RadiationWatchPrinter : public RadiationWatch
+{
+  public:
+    RadiationWatchPrinter(int signPin, int noisePin);
+  
+    virtual void printKey();
+    virtual void printStatus();
 };
 
 #endif

@@ -47,12 +47,6 @@ void RadiationWatch::setup()
   _prevTime = millis();
 }
 
-void RadiationWatch::printKey()
-{
-  //CSV-formatting for serial output (substitute , for _)
-  Serial.println("hour[h]_sec[s]_count_cpm_uSv/h_uSv/hError");
-}
-
 int RadiationWatch::signPin()
 {
   return digitalRead(_signPin);
@@ -94,6 +88,9 @@ void RadiationWatch::loop()
   {
     //Get current time
     int currTime = millis();
+
+    Serial.print("RadiationWatch::loop noiseCount = ");
+    Serial.println(noiseCount);
     
     //No noise detected in 10000 loops
     if(noiseCount == 0)
@@ -160,8 +157,28 @@ void RadiationWatch::loop()
   index++;
 }
 
+void RadiationWatch::printKey()
+{
+}
+
 void RadiationWatch::printStatus()
 {
+  Serial.println("RadiationWatch::printStatus");
+}
+
+RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin) : RadiationWatch(signPin, noisePin)
+{
+}
+
+void RadiationWatchPrinter::printKey()
+{
+  //CSV-formatting for serial output (substitute , for _)
+  Serial.println("hour[h]_sec[s]_count_cpm_uSv/h_uSv/hError");
+}
+
+void RadiationWatchPrinter::printStatus()
+{
+  Serial.println("RadiationWatchPrinter::printStatus");
   char msg[256]; //Message buffer for serial output
   //String buffers of float values for serial output
   char cpmBuff[20];

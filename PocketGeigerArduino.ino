@@ -5,7 +5,7 @@
 
 #include "RadiationWatch.h"
 
-RadiationWatch radiationWatch(2, 5);
+RadiationWatchPrinter radiationWatch(2, 5);
 
 void setup()
 {
