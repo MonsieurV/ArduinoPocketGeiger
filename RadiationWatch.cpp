@@ -89,9 +89,6 @@ void RadiationWatch::loop()
     //Get current time
     int currTime = millis();
 
-    Serial.print("RadiationWatch::loop noiseCount = ");
-    Serial.println(noiseCount);
-    
     //No noise detected in 10000 loops
     if(noiseCount == 0)
     {
@@ -163,7 +160,6 @@ void RadiationWatch::printKey()
 
 void RadiationWatch::printStatus()
 {
-  Serial.println("RadiationWatch::printStatus");
 }
 
 RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin) : RadiationWatch(signPin, noisePin)
@@ -178,7 +174,6 @@ void RadiationWatchPrinter::printKey()
 
 void RadiationWatchPrinter::printStatus()
 {
-  Serial.println("RadiationWatchPrinter::printStatus");
   char msg[256]; //Message buffer for serial output
   //String buffers of float values for serial output
   char cpmBuff[20];
