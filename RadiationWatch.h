@@ -14,13 +14,17 @@ class RadiationWatch
     void setup();
     void loop();
     
-    int signPin();
-    int noisePin();
+    double cpm();
     
     virtual void printKey();
     virtual void printStatus();
   
   protected:
+    int signPin();
+    int noisePin();
+    
+    double cpmTime();
+  
     static const unsigned int kHistoryCount = 200;
 
     double _cpmHistory[kHistoryCount]; //History of count rates
@@ -38,7 +42,7 @@ class RadiationWatch
     int sON;//Lock flag for Radiation Pulse
     int nON;//Lock flag for Noise Puls
     
-    double cpm; //Count rate [cpm] of current
+    double _cpm; //Count rate [cpm] of current
     int cpmIndex;//Position of current count rate on cpmHistory[]
     int cpmIndexPrev;//Flag to prevent duplicative counting
     

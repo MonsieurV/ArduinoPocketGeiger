@@ -17,7 +17,7 @@ RadiationWatch::RadiationWatch(int signPin, int noisePin) : _signPin(signPin), _
   sON = 0;
   nON = 0;
   
-  cpm = 0;
+  _cpm = 0;
   cpmIndex = 0;
   cpmIndexPrev = 0;
   
@@ -105,7 +105,7 @@ void RadiationWatch::loop()
         
         if(_cpmHistory[cpmIndex] > 0)
         {
-          cpm -= _cpmHistory[cpmIndex];
+          _cpm -= _cpmHistory[cpmIndex];
         }
         _cpmHistory[cpmIndex] = 0;
       }
@@ -113,7 +113,7 @@ void RadiationWatch::loop()
       //Store count log
       _cpmHistory[cpmIndex] += signCount;
       //Add number of counts
-      cpm += signCount;
+      _cpm += signCount;
       
       //Get ready time for 10000 loops
       cpmTimeMSec += abs(currTime - _prevTime);
@@ -162,6 +162,23 @@ void RadiationWatch::printStatus()
 {
 }
 
+double RadiationWatch::cpmTime()
+{
+  return cpmTimeSec / 60.0;
+}
+
+double RadiationWatch::cpm()
+{
+  double min = cpmTime();
+  
+  if (min != 0) {
+    return _cpm / min;
+  }
+  else {
+    return 0;
+  }
+}
+
 RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin) : RadiationWatch(signPin, noisePin)
 {
 }
@@ -183,16 +200,15 @@ void RadiationWatchPrinter::printStatus()
   char uSvdBuff[20];
     
   //Elapsed time of measurement (max=20min.)
-  double min = cpmTimeSec / 60.0;
+  double min = cpmTime();
+  dtostrf(cpm(), -1, 3, cpmBuff);
   if(min != 0)
   {
     //Calculate cpm, uSv/h and error of uSv/h
-    dtostrf(cpm / min, -1, 3, cpmBuff);
-    dtostrf(cpm / min / kAlpha, -1, 3, uSvBuff);
-    dtostrf(sqrt(cpm) / min / kAlpha, -1, 3, uSvdBuff);
+    dtostrf(_cpm / min / kAlpha, -1, 3, uSvBuff);
+    dtostrf(sqrt(_cpm) / min / kAlpha, -1, 3, uSvdBuff);
   }else{
     //Division by zero
-    dtostrf(0, -1, 3, cpmBuff);
     dtostrf(0, -1, 3, uSvBuff);
     dtostrf(0, -1, 3, uSvdBuff);
   }
