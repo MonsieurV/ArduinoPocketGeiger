@@ -30,8 +30,6 @@ class RadiationWatch
     int _signPin;   //Radiation Pulse (Yellow)
     int _noisePin;  //Vibration Noise Pulse (White)
 
-    static const double alpha = 53.032; // cpm = uSv x alpha
-    
     int index; //Number of loops
     
     int signCount;  //Counter for Radiation Pulse

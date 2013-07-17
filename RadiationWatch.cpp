@@ -174,6 +174,8 @@ void RadiationWatchPrinter::printKey()
 
 void RadiationWatchPrinter::printStatus()
 {
+  static const double kAlpha = 53.032; // cpm = uSv x alpha
+    
   char msg[256]; //Message buffer for serial output
   //String buffers of float values for serial output
   char cpmBuff[20];
@@ -186,8 +188,8 @@ void RadiationWatchPrinter::printStatus()
   {
     //Calculate cpm, uSv/h and error of uSv/h
     dtostrf(cpm / min, -1, 3, cpmBuff);
-    dtostrf(cpm / min / alpha, -1, 3, uSvBuff);
-    dtostrf(sqrt(cpm) / min / alpha, -1, 3, uSvdBuff);
+    dtostrf(cpm / min / kAlpha, -1, 3, uSvBuff);
+    dtostrf(sqrt(cpm) / min / kAlpha, -1, 3, uSvdBuff);
   }else{
     //Division by zero
     dtostrf(0, -1, 3, cpmBuff);
