@@ -179,6 +179,25 @@ double RadiationWatch::cpm()
   }
 }
 
+static const double kAlpha = 53.032; // cpm = uSv x alpha
+
+double RadiationWatch::uSvh()
+{
+  return cpm() / kAlpha;
+}
+
+double RadiationWatch::uSvhError()
+{
+  double min = cpmTime();
+  
+  if (min != 0) {
+    return sqrt(_cpm) / min / kAlpha;
+  }
+  else {
+    return 0;
+  }
+}
+
 RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin) : RadiationWatch(signPin, noisePin)
 {
 }
@@ -191,7 +210,6 @@ void RadiationWatchPrinter::printKey()
 
 void RadiationWatchPrinter::printStatus()
 {
-  static const double kAlpha = 53.032; // cpm = uSv x alpha
     
   char msg[256]; //Message buffer for serial output
   //String buffers of float values for serial output
@@ -202,16 +220,8 @@ void RadiationWatchPrinter::printStatus()
   //Elapsed time of measurement (max=20min.)
   double min = cpmTime();
   dtostrf(cpm(), -1, 3, cpmBuff);
-  if(min != 0)
-  {
-    //Calculate cpm, uSv/h and error of uSv/h
-    dtostrf(_cpm / min / kAlpha, -1, 3, uSvBuff);
-    dtostrf(sqrt(_cpm) / min / kAlpha, -1, 3, uSvdBuff);
-  }else{
-    //Division by zero
-    dtostrf(0, -1, 3, uSvBuff);
-    dtostrf(0, -1, 3, uSvdBuff);
-  }
+  dtostrf(uSvh(), -1, 3, uSvBuff);  // uSv/h
+  dtostrf(uSvhError(), -1, 3, uSvdBuff);  // error of uSv/h
     
   //Create message for serial port
   sprintf(msg, "%d,%d.%03d,%d,%s,%s,%s",

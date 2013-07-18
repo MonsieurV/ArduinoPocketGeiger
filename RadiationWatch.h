@@ -15,6 +15,8 @@ class RadiationWatch
     void loop();
     
     double cpm();
+    double uSvh();       // uSv/h
+    double uSvhError();  // error of uSv/h
     
     virtual void printKey();
     virtual void printStatus();
