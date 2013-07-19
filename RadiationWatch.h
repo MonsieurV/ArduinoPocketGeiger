@@ -6,6 +6,8 @@
 #ifndef RadiationWatch_h
 #define RadiationWatch_h
 
+#include "Arduino.h"
+
 class RadiationWatch
 {
   public:
@@ -17,6 +19,8 @@ class RadiationWatch
     double cpm();
     double uSvh();       // uSv/h
     double uSvhError();  // error of uSv/h
+    
+    boolean isAvailable();
     
     virtual void printKey();
     virtual void printStatus();

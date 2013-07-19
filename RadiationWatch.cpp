@@ -162,6 +162,11 @@ void RadiationWatch::printStatus()
 {
 }
 
+boolean RadiationWatch::isAvailable()
+{
+  return cpmTime() != 0;
+}
+
 double RadiationWatch::cpmTime()
 {
   return cpmTimeSec / 60.0;
@@ -210,7 +215,6 @@ void RadiationWatchPrinter::printKey()
 
 void RadiationWatchPrinter::printStatus()
 {
-    
   char msg[256]; //Message buffer for serial output
   //String buffers of float values for serial output
   char cpmBuff[20];
