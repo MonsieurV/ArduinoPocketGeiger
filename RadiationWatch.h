@@ -11,7 +11,7 @@
 class RadiationWatch
 {
   public:
-    RadiationWatch(int signPin, int noisePin);
+    RadiationWatch(int signPin, int noisePin, int signIRQ);
     
     void setup();
     void loop();
@@ -31,7 +31,7 @@ class RadiationWatch
     
     double cpmTime();
   
-    static const unsigned int kHistoryCount = 200;
+    static const unsigned int kHistoryCount = 50; // was 200
 
     double _cpmHistory[kHistoryCount]; //History of count rates
     
@@ -39,10 +39,10 @@ class RadiationWatch
 
     int _signPin;   //Radiation Pulse (Yellow)
     int _noisePin;  //Vibration Noise Pulse (White)
+	int _signIRQ;	//The IRQ number for the radiation pulse pin (depends on Arduino model)
 
     int index; //Number of loops
     
-    int signCount;  //Counter for Radiation Pulse
     int noiseCount;  //Counter for Noise Pulse
     
     int sON;//Lock flag for Radiation Pulse
@@ -63,7 +63,7 @@ class RadiationWatch
 class RadiationWatchPrinter : public RadiationWatch
 {
   public:
-    RadiationWatchPrinter(int signPin, int noisePin);
+    RadiationWatchPrinter(int signPin, int noisePin, int signIRQ);
   
     virtual void printKey();
     virtual void printStatus();

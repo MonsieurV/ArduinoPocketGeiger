@@ -6,12 +6,20 @@
 #include "Arduino.h"
 #include "RadiationWatch.h"
 
-RadiationWatch::RadiationWatch(int signPin, int noisePin) : _signPin(signPin), _noisePin(noisePin)
+int signCount;  //Counter for Radiation Pulse
+
+//Called via Interrupt when a radiation pulse is detected
+void triggerRadiationPulse() {
+  signCount++;
+  tone(8, 800, 1); // Output classic geiger counter tick noise
+}
+
+RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPin(signPin), _noisePin(noisePin), _signIRQ(signIRQ)
 {
+  signCount = 0;
   _prevTime = 0;
   index = 0;
   
-  signCount = 0;
   noiseCount = 0;
   
   sON = 0;
@@ -38,6 +46,10 @@ void RadiationWatch::setup()
   pinMode(_noisePin,INPUT);
   digitalWrite(_noisePin,HIGH);
   
+  //Attach interrupt handler to catch incoming radiation pulses, 
+  //and execute triggerRadiationPulse() when this happens.
+  attachInterrupt(_signIRQ, triggerRadiationPulse, FALLING);
+
   //Initialize cpmHistory[]
   for(int i = 0; i < kHistoryCount;i++ )
   {
@@ -61,18 +73,8 @@ void RadiationWatch::loop()
 {
   // Raw data of Radiation Pulse: Not-detected -> High, Detected -> Low
   int sign = signPin();
-
   // Raw data of Noise Pulse: Not-detected -> Low, Detected -> High
   int noise = noisePin();
-
-  //Radiation Pulse normally keeps low for about 100[usec]
-  if(sign==0 && sON==0)
-  {//Deactivate Radiation Pulse counting for a while
-    sON = 1;
-    signCount++;
-  }else if(sign==1 && sON==1){
-    sON = 0;
-  }
 
   //Noise Pulse normally keeps high for about 100[usec]
   if(noise==1 && nON==0)
@@ -203,7 +205,7 @@ double RadiationWatch::uSvhError()
   }
 }
 
-RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin) : RadiationWatch(signPin, noisePin)
+RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin, int signIRQ) : RadiationWatch(signPin, noisePin, signIRQ)
 {
 }
 
