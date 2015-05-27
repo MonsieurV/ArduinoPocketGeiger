@@ -1,4 +1,4 @@
-#Radiation Watch Arduino library
+# Radiation Watch Arduino library
 
 An Arduino library to interface with the [Radiation Watch](http://www.radiation-watch.org/) Pocket Geiger
 
@@ -6,6 +6,6 @@ Based on [thomasaw's library](https://github.com/thomasaw/RadiationWatch) and th
 
 Changes in this version:
 
-x) Changed from using loops for the radiation detection to interrupts
+* Changed from using loops for the radiation detection to interrupts
 
-x) Added support for classic radiation "click" via speaker
+* Allow to declare a custom event handler for when a radiation pulse is detected
