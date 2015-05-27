@@ -226,8 +226,8 @@ RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin, int sign
 
 void RadiationWatchPrinter::printKey()
 {
-  //CSV-formatting for serial output (substitute , for _)
-  Serial.println("hour[h]_sec[s]_count_cpm_uSv/h_uSv/hError");
+  // CSV-formatting for serial output.
+  Serial.println("hour[h],sec[s],count,cpm,uSv/h,uSv/hError");
 }
 
 void RadiationWatchPrinter::printStatus()
