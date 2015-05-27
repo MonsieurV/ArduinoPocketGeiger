@@ -6,20 +6,30 @@
 #include "Arduino.h"
 #include "RadiationWatch.h"
 
-int signCount;  //Counter for Radiation Pulse
+RadiationWatch* context;
+
+// Function used to forward the call to the member function
+// RadiationWatch::onRadiationPulse when a radiation pulse is detected.
+// (The attachInterrupt() can't take a member function as parameter)
+// See. http://stackoverflow.com/questions/12662891/c-passing-member-function-as-argument
+void onRadiationPulseForwarder() {
+  context->onRadiationPulse();
+}
 
 //Called via Interrupt when a radiation pulse is detected
-void triggerRadiationPulse() {
+void RadiationWatch::onRadiationPulse() {
   signCount++;
-  tone(8, 800, 1); // Output classic geiger counter tick noise
+  if(_radiationPulseCallback != NULL)
+    // Trigger the registered callback.
+    _radiationPulseCallback();
 }
 
 RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPin(signPin), _noisePin(noisePin), _signIRQ(signIRQ)
 {
-  signCount = 0;
   _prevTime = 0;
   index = 0;
   
+  signCount = 0;
   noiseCount = 0;
   
   sON = 0;
@@ -34,6 +44,9 @@ RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPi
   
   cpmTimeMSec = 0;
   cpmTimeSec = 0;
+
+  _radiationPulseCallback = NULL;
+  context = this;
 }
 
 void RadiationWatch::setup()
@@ -48,7 +61,7 @@ void RadiationWatch::setup()
   
   //Attach interrupt handler to catch incoming radiation pulses, 
   //and execute triggerRadiationPulse() when this happens.
-  attachInterrupt(_signIRQ, triggerRadiationPulse, FALLING);
+  attachInterrupt(_signIRQ, onRadiationPulseForwarder, FALLING);
 
   //Initialize cpmHistory[]
   for(int i = 0; i < kHistoryCount;i++ )
@@ -57,6 +70,10 @@ void RadiationWatch::setup()
   }
   
   _prevTime = millis();
+}
+
+void RadiationWatch::registerRPCallback(void (*callback)(void)) {
+  _radiationPulseCallback = callback;
 }
 
 int RadiationWatch::signPin()
