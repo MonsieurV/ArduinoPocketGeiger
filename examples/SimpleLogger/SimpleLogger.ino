@@ -1,6 +1,11 @@
 #include <RadiationWatch.h>
 
-RadiationWatch radiationWatch(2, 5);
+RadiationWatch radiationWatch(2, 5, 0);
+
+void onRadiationPulse() {
+  Serial.print("cpm = ");
+  Serial.println(radiationWatch.cpm());
+}
 
 void setup()
 {
@@ -10,22 +15,14 @@ void setup()
   
   radiationWatch.setup();
 
+  // Register the callback.
+  radiationWatch.registerRPCallback(&onRadiationPulse);
+
   Serial.println("starting...");
 }
-
-unsigned int i = 0;
 
 void loop()
 {
   radiationWatch.loop();
-  
-  if (radiationWatch.isAvailable() && i >= 1000) {
-    Serial.print("cpm = ");
-    Serial.println(radiationWatch.cpm());
-    
-    i = 0;
-  }
-  
-  i++;
 }
 

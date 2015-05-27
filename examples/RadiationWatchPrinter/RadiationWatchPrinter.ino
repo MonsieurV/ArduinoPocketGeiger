@@ -5,7 +5,11 @@
 
 #include "RadiationWatch.h"
 
-RadiationWatchPrinter radiationWatch(2, 5);
+RadiationWatchPrinter radiationWatch(2, 5, 0);
+
+void onRadiationPulse() {
+	Serial.println("Pulse!");
+}
 
 void setup()
 {
@@ -14,6 +18,9 @@ void setup()
   Serial.begin(9600);
   
   radiationWatch.setup();
+
+  // Register the callback.
+  radiationWatch.registerRPCallback(&onRadiationPulse);
 
   radiationWatch.printKey();
 }
