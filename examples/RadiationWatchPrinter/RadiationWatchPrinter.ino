@@ -9,6 +9,7 @@ RadiationWatchPrinter radiationWatch(2, 5, 0);
 
 void onRadiationPulse() {
 	Serial.println("Pulse!");
+	radiationWatch.printStatus();
 }
 
 void setup()
@@ -23,6 +24,7 @@ void setup()
   radiationWatch.registerRPCallback(&onRadiationPulse);
 
   radiationWatch.printKey();
+  radiationWatch.printStatus();
 }
 
 void loop()
