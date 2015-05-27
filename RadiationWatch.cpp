@@ -159,8 +159,6 @@ void RadiationWatch::loop()
         }
       }
       
-      printStatus();
-      
       index=0;
     }
     
