@@ -9,7 +9,7 @@ RadiationWatchPrinter radiationWatch(2, 5, 0);
 
 void onRadiationPulse() {
 	Serial.println("Pulse!");
-	radiationWatch.printStatus();
+	Serial.println(radiationWatch.printStatus());
 }
 
 void setup()
@@ -17,19 +17,17 @@ void setup()
   //Serial setup
   //9600bps
   Serial.begin(9600);
-  
+
   radiationWatch.setup();
 
   // Register the callback.
   radiationWatch.registerRPCallback(&onRadiationPulse);
 
-  radiationWatch.printKey();
-  radiationWatch.printStatus();
+  Serial.println(radiationWatch.printKey());
+  Serial.println(radiationWatch.printStatus());
 }
 
 void loop()
 {
   radiationWatch.loop();
 }
-
-

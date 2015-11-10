@@ -28,20 +28,20 @@ RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPi
 {
   _prevTime = 0;
   index = 0;
-  
+
   signCount = 0;
   noiseCount = 0;
-  
+
   sON = 0;
   nON = 0;
-  
+
   _cpm = 0;
   cpmIndex = 0;
   cpmIndexPrev = 0;
-  
+
   totalSec = 0;
   totalHour = 0;
-  
+
   cpmTimeMSec = 0;
   cpmTimeSec = 0;
 
@@ -58,8 +58,8 @@ void RadiationWatch::setup()
   //PIN setting for Noise Pulse
   pinMode(_noisePin,INPUT);
   digitalWrite(_noisePin,HIGH);
-  
-  //Attach interrupt handler to catch incoming radiation pulses, 
+
+  //Attach interrupt handler to catch incoming radiation pulses,
   //and execute triggerRadiationPulse() when this happens.
   attachInterrupt(_signIRQ, onRadiationPulseForwarder, FALLING);
 
@@ -68,7 +68,7 @@ void RadiationWatch::setup()
   {
     _cpmHistory[i] = 0;
   }
-  
+
   _prevTime = millis();
 }
 
@@ -116,24 +116,24 @@ void RadiationWatch::loop()
       {
         cpmIndexPrev = totalSec;
         cpmIndex++;
-        
+
         if(cpmIndex >= kHistoryCount)
         {
           cpmIndex = 0;
         }
-        
+
         if(_cpmHistory[cpmIndex] > 0)
         {
           _cpm -= _cpmHistory[cpmIndex];
         }
         _cpmHistory[cpmIndex] = 0;
       }
-      
+
       //Store count log
       _cpmHistory[cpmIndex] += signCount;
       //Add number of counts
       _cpm += signCount;
-      
+
       //Get ready time for 10000 loops
       cpmTimeMSec += abs(currTime - _prevTime);
       //Transform from msec. to sec. (to prevent overflow)
@@ -147,7 +147,7 @@ void RadiationWatch::loop()
         }else{
           cpmTimeSec++;
         }
-        
+
         //Total measurement time
         totalSec++;
         //Transform from sec. to hour. (to prevent overflow)
@@ -158,26 +158,22 @@ void RadiationWatch::loop()
           totalHour++;
         }
       }
-      
+
       index=0;
     }
-    
+
     //Initialization for next 10000 loops
     _prevTime = currTime;
     signCount = 0;
     noiseCount = 0;
   }
-  
+
   index++;
 }
 
-void RadiationWatch::printKey()
-{
-}
+char* RadiationWatch::printKey() {}
 
-void RadiationWatch::printStatus()
-{
-}
+char* RadiationWatch::printStatus() {}
 
 boolean RadiationWatch::isAvailable()
 {
@@ -192,7 +188,7 @@ double RadiationWatch::cpmTime()
 double RadiationWatch::cpm()
 {
   double min = cpmTime();
-  
+
   if (min != 0) {
     return _cpm / min;
   }
@@ -211,7 +207,7 @@ double RadiationWatch::uSvh()
 double RadiationWatch::uSvhError()
 {
   double min = cpmTime();
-  
+
   if (min != 0) {
     return sqrt(_cpm) / min / kAlpha;
   }
@@ -224,28 +220,25 @@ RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin, int sign
 {
 }
 
-void RadiationWatchPrinter::printKey()
+char* RadiationWatchPrinter::printKey()
 {
-  // CSV-formatting for serial output.
-  Serial.println("hour[h],sec[s],count,cpm,uSv/h,uSv/hError");
+  // CSV-formatting for output.
+  return "hour[h],sec[s],count,cpm,uSv/h,uSv/hError";
 }
 
-void RadiationWatchPrinter::printStatus()
+char* RadiationWatchPrinter::printStatus()
 {
-  char msg[256]; //Message buffer for serial output
   //String buffers of float values for serial output
   char cpmBuff[20];
   char uSvBuff[20];
   char uSvdBuff[20];
-    
-  //Elapsed time of measurement (max=20min.)
+  // Elapsed time of measurement (max=20min.)
   double min = cpmTime();
   dtostrf(cpm(), -1, 3, cpmBuff);
   dtostrf(uSvh(), -1, 3, uSvBuff);  // uSv/h
   dtostrf(uSvhError(), -1, 3, uSvdBuff);  // error of uSv/h
-    
-  //Create message for serial port
-  sprintf(msg, "%d,%d.%03d,%d,%s,%s,%s",
+  // Format message.
+  sprintf(this.msg, "%d,%d.%03d,%d,%s,%s,%s",
     totalHour,totalSec,
     cpmTimeMSec,
     signCount,
@@ -253,9 +246,5 @@ void RadiationWatchPrinter::printStatus()
     uSvBuff,
     uSvdBuff
     );
-    
-  //Send message to serial port
-  Serial.println(msg);
+  return this.msg;
 }
-
-
