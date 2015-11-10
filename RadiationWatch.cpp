@@ -7,6 +7,8 @@
 #include "RadiationWatch.h"
 
 RadiationWatch* context;
+// Message buffer for serial output.
+char msg[256];
 
 // Function used to forward the call to the member function
 // RadiationWatch::onRadiationPulse when a radiation pulse is detected.
@@ -223,7 +225,8 @@ RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin, int sign
 char* RadiationWatchPrinter::printKey()
 {
   // CSV-formatting for output.
-  return "hour[h],sec[s],count,cpm,uSv/h,uSv/hError";
+  msg = "hour[h],sec[s],count,cpm,uSv/h,uSv/hError";
+  return msg;
 }
 
 char* RadiationWatchPrinter::printStatus()
@@ -238,7 +241,7 @@ char* RadiationWatchPrinter::printStatus()
   dtostrf(uSvh(), -1, 3, uSvBuff);  // uSv/h
   dtostrf(uSvhError(), -1, 3, uSvdBuff);  // error of uSv/h
   // Format message.
-  sprintf(this.msg, "%d,%d.%03d,%d,%s,%s,%s",
+  sprintf(msg, "%d,%d.%03d,%d,%s,%s,%s",
     totalHour,totalSec,
     cpmTimeMSec,
     signCount,
@@ -246,5 +249,5 @@ char* RadiationWatchPrinter::printStatus()
     uSvBuff,
     uSvdBuff
     );
-  return this.msg;
+  return msg;
 }

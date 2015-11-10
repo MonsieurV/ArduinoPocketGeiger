@@ -78,10 +78,6 @@ class RadiationWatchPrinter : public RadiationWatch
 
     virtual char* printKey();
     virtual char* printStatus();
-
-  protected:
-    //Message buffer for serial output
-    char msg[256];
 };
 
 #endif
