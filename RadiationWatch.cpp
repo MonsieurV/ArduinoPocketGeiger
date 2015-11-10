@@ -225,8 +225,7 @@ RadiationWatchPrinter::RadiationWatchPrinter(int signPin, int noisePin, int sign
 char* RadiationWatchPrinter::printKey()
 {
   // CSV-formatting for output.
-  msg = "hour[h],sec[s],count,cpm,uSv/h,uSv/hError";
-  return msg;
+  return "hour[h],sec[s],count,cpm,uSv/h,uSv/hError";
 }
 
 char* RadiationWatchPrinter::printStatus()
