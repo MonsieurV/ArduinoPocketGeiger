@@ -63,7 +63,7 @@ void RadiationWatch::setup()
 
   //Attach interrupt handler to catch incoming radiation pulses,
   //and execute triggerRadiationPulse() when this happens.
-  attachInterrupt(_signIRQ, onRadiationPulseForwarder, FALLING);
+  attachInterrupt(_signIRQ, onRadiationPulseForwarder, RISING);
 
   //Initialize cpmHistory[]
   for(int i = 0; i < kHistoryCount;i++ )
