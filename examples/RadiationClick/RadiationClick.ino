@@ -11,8 +11,8 @@ RadiationWatchPrinter radiationWatch(2, 5, 0);
 
 void onRadiationPulse() {
   // Output classic geiger counter tick noise
-	tone(PIN_TONE, 800, 1);
-	Serial.println(radiationWatch.printStatus());
+  tone(PIN_TONE, 800, 1);
+  Serial.println(radiationWatch.printStatus());
 }
 
 void setup()

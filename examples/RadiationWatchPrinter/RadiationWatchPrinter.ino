@@ -8,8 +8,8 @@
 RadiationWatchPrinter radiationWatch(2, 5, 0);
 
 void onRadiationPulse() {
-	Serial.println("Pulse!");
-	Serial.println(radiationWatch.printStatus());
+  Serial.println("Pulse!");
+  Serial.println(radiationWatch.printStatus());
 }
 
 void setup()
