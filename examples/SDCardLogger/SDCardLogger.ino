@@ -12,7 +12,6 @@ void onRadiationPulse() {
   str = radiationWatch.printStatus();
   Serial.println(str);
   dataFile.println(str);
-  dataFile.flush();
 }
 
 void setup()
@@ -44,4 +43,5 @@ void setup()
 void loop()
 {
   radiationWatch.loop();
+  dataFile.flush();
 }
