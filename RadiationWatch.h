@@ -48,13 +48,13 @@ class RadiationWatch
 
     int _signPin;   //Radiation Pulse (Yellow)
     int _noisePin;  //Vibration Noise Pulse (White)
-    int _signIRQ;	//The IRQ number for the radiation pulse pin (depends on Arduino model)
+    int _signIRQ;  //The IRQ number for the radiation pulse pin (depends on Arduino model)
     void (*_radiationPulseCallback)(void);
 
     int index; //Number of loops
 
-    int noiseCount;  //Counter for Noise Pulse
-    int signCount;  //Counter for Radiation Pulse
+    int volatile noiseCount;  //Counter for Noise Pulse
+    int volatile signCount;  //Counter for Radiation Pulse
 
     int sON;//Lock flag for Radiation Pulse
     int nON;//Lock flag for Noise Puls
