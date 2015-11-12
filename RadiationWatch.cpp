@@ -20,7 +20,7 @@ void onRadiationPulseForwarder() {
 
 //Called via Interrupt when a radiation pulse is detected
 void RadiationWatch::onRadiationPulse() {
-  signCount++;
+  signCountIrq++;
   if(_radiationPulseCallback != NULL)
     // Trigger the registered callback.
     _radiationPulseCallback();
@@ -32,6 +32,7 @@ RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPi
   index = 0;
 
   signCount = 0;
+  signCountIrq = 0;
   noiseCount = 0;
 
   sON = 0;
@@ -95,6 +96,15 @@ void RadiationWatch::loop()
   // Raw data of Noise Pulse: Not-detected -> Low, Detected -> High
   int noise = noisePin();
 
+  //Radiation Pulse normally keeps low for about 100[usec]
+  if(sign==0 && sON==0)
+  {//Deactivate Radiation Pulse counting for a while
+    sON = 1;
+    signCount++;
+  }else if(sign==1 && sON==1){
+    sON = 0;
+  }
+
   //Noise Pulse normally keeps high for about 100[usec]
   if(noise==1 && nON==0)
   {//Deactivate Noise Pulse counting for a while
@@ -130,6 +140,13 @@ void RadiationWatch::loop()
         }
         _cpmHistory[cpmIndex] = 0;
       }
+
+      if(signCountIrq != signCount) {
+        Serial.println("Sign count mismatch");
+        Serial.println(signCount);
+        Serial.println(signCountIrq);
+      }
+
 
       //Store count log
       _cpmHistory[cpmIndex] += signCount;
@@ -167,6 +184,7 @@ void RadiationWatch::loop()
     //Initialization for next 10000 loops
     _prevTime = currTime;
     signCount = 0;
+    signCountIrq = 0;
     noiseCount = 0;
   }
 

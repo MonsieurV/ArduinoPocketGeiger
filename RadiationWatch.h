@@ -55,6 +55,7 @@ class RadiationWatch
 
     int volatile noiseCount;  //Counter for Noise Pulse
     int volatile signCount;  //Counter for Radiation Pulse
+    int volatile signCountIrq;  //Counter for Radiation Pulse
 
     int sON;//Lock flag for Radiation Pulse
     int nON;//Lock flag for Noise Puls
