@@ -146,6 +146,10 @@ void RadiationWatch::loop()
         Serial.println(signCount);
         Serial.println(signCountIrq);
       }
+      if(noiseCount > 0) {
+        Serial.println("Noise!");
+        Serial.println(noiseCount);
+      }
 
 
       //Store count log
