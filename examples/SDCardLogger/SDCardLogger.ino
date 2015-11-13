@@ -8,7 +8,6 @@ File dataFile;
 char* str;
 
 void onRadiationPulse() {
-  Serial.println("Pulse!");
   str = radiationWatch.printStatus();
   Serial.println(str);
   dataFile.println(str);

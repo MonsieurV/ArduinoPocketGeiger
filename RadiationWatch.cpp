@@ -20,10 +20,13 @@ void onRadiationPulseForwarder() {
 
 //Called via Interrupt when a radiation pulse is detected
 void RadiationWatch::onRadiationPulse() {
+  Serial.println(micros());
   signCountIrq++;
-  if(_radiationPulseCallback != NULL)
+  if(_radiationPulseCallback != NULL) {
     // Trigger the registered callback.
     _radiationPulseCallback();
+  }
+  Serial.println(micros());
 }
 
 RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPin(signPin), _noisePin(noisePin), _signIRQ(signIRQ)
@@ -120,6 +123,10 @@ void RadiationWatch::loop()
     //Get current time
     int currTime = millis();
 
+    if(noiseCount > 0) {
+      Serial.println("Noise!");
+      Serial.println(noiseCount);
+    }
     //No noise detected in 10000 loops
     if(noiseCount == 0)
     {
@@ -146,11 +153,6 @@ void RadiationWatch::loop()
         Serial.println(signCount);
         Serial.println(signCountIrq);
       }
-      if(noiseCount > 0) {
-        Serial.println("Noise!");
-        Serial.println(noiseCount);
-      }
-
 
       //Store count log
       _cpmHistory[cpmIndex] += signCount;
