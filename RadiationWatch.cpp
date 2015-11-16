@@ -20,13 +20,13 @@ void onRadiationPulseForwarder() {
 
 //Called via Interrupt when a radiation pulse is detected
 void RadiationWatch::onRadiationPulse() {
-  Serial.println(micros());
-  signCountIrq++;
-  if(_radiationPulseCallback != NULL) {
-    // Trigger the registered callback.
-    _radiationPulseCallback();
-  }
-  Serial.println(micros());
+  // Serial.println(micros());
+  signCount++;
+  // if(_radiationPulseCallback != NULL) {
+  //   // Trigger the registered callback.
+  //   _radiationPulseCallback();
+  // }
+  // Serial.println(micros());
 }
 
 RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPin(signPin), _noisePin(noisePin), _signIRQ(signIRQ)
@@ -35,7 +35,6 @@ RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPi
   index = 0;
 
   signCount = 0;
-  signCountIrq = 0;
   noiseCount = 0;
 
   sON = 0;
@@ -92,21 +91,13 @@ int RadiationWatch::noisePin()
   return digitalRead(_noisePin);
 }
 
+unsigned long beginAt = 0;
+unsigned long endAt = 0;
+
 void RadiationWatch::loop()
 {
-  // Raw data of Radiation Pulse: Not-detected -> High, Detected -> Low
-  int sign = signPin();
   // Raw data of Noise Pulse: Not-detected -> Low, Detected -> High
   int noise = noisePin();
-
-  //Radiation Pulse normally keeps low for about 100[usec]
-  if(sign==0 && sON==0)
-  {//Deactivate Radiation Pulse counting for a while
-    sON = 1;
-    signCount++;
-  }else if(sign==1 && sON==1){
-    sON = 0;
-  }
 
   //Noise Pulse normally keeps high for about 100[usec]
   if(noise==1 && nON==0)
@@ -148,11 +139,7 @@ void RadiationWatch::loop()
         _cpmHistory[cpmIndex] = 0;
       }
 
-      if(signCountIrq != signCount) {
-        Serial.println("Sign count mismatch");
-        Serial.println(signCount);
-        Serial.println(signCountIrq);
-      }
+      noInterrupts();
 
       //Store count log
       _cpmHistory[cpmIndex] += signCount;
@@ -187,11 +174,14 @@ void RadiationWatch::loop()
       index=0;
     }
 
+
     //Initialization for next 10000 loops
     _prevTime = currTime;
     signCount = 0;
-    signCountIrq = 0;
     noiseCount = 0;
+    interrupts();
+
+    Serial.println(printStatus());
   }
 
   index++;

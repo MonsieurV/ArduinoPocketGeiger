@@ -40,7 +40,7 @@ class RadiationWatch
 
     double cpmTime();
 
-    static const unsigned int kHistoryCount = 50; // was 200
+    static const unsigned int kHistoryCount = 200; // was 200
 
     double _cpmHistory[kHistoryCount]; //History of count rates
 
@@ -55,7 +55,6 @@ class RadiationWatch
 
     int volatile noiseCount;  //Counter for Noise Pulse
     int volatile signCount;  //Counter for Radiation Pulse
-    int volatile signCountIrq;  //Counter for Radiation Pulse
 
     int sON;//Lock flag for Radiation Pulse
     int nON;//Lock flag for Noise Puls
