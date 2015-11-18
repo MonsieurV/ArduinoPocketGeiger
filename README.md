@@ -1,8 +1,10 @@
 # Arduino Radiation Watch library
 
-An Arduino library to interface with the [Radiation Watch](http://www.radiation-watch.co.uk/) Pocket Geiger counter.  Type 5 .
+An Arduino library to interface with the [Radiation Watch Pocket Geiger counter](http://www.radiation-watch.co.uk/) (Type 5).
 
-The library monitors the Pocket Geiger through interrupts, processes the Sievert dose and allow to get back the data using a simple interface. It provides examples to print data to Serial, log it on a SD card or through internet, giving you some ideas of what to do with it.
+![](/misc/type5.jpg?raw=true "Radiation Watch Type 5 Pocket Geiger counter")
+
+The library monitors the Pocket Geiger through interrupts, processes the hourly Sievert dose and allows to get back the data using a simple interface. It comes with examples to print data to Serial, log it on a SD card or through internet, giving you some ideas of what to do with it.
 
 ## Getting started
 
@@ -47,7 +49,9 @@ TODO Usage of the RadiationWatch class
 
 -----------------------
 
-Find this cool? Check out [our blog](http://blog.ytotech.com) and [send us a note](mailto:yoan@ytotech.com). Happy hacking!
+Find this cool? Check out [our blog](http://blog.ytotech.com) or [send us a note](mailto:yoan@ytotech.com). Happy hacking!
+
+In research of an hacking idea? The [Playspoon fully integrated LCD Geiger counter](http://www.playspoon.com/wiki/index.php/GeigerCounter) may inspire you.
 
 ### Credits
 
