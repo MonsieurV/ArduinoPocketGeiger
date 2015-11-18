@@ -4,7 +4,7 @@ An Arduino library to interface with the [Radiation Watch Pocket Geiger counter]
 
 ![](/misc/type5.jpg?raw=true "Radiation Watch Type 5 Pocket Geiger counter")
 
-The library monitors the Pocket Geiger through interrupts, processes the hourly Sievert dose and allows to get back the data using a simple interface. It comes with examples to print data to Serial, log it on a SD card or through internet, giving you some ideas of what to do with it.
+The library monitors the Pocket Geiger through interrupts, processes the hourly [Sievert dose](https://en.wikipedia.org/wiki/Sievert) and allows to get back the data using a simple interface. It comes with examples to print data to Serial, log it on a SD card or through internet, giving you some ideas of what to do with it.
 
 ## Getting started
 
@@ -39,9 +39,13 @@ RadiationWatchPrinter radiationWatch(signPin, noisePin, signIrq, noiseIrq);
 
 ### Launch the Serial printer example
 
-Go to your Arduino examples and launch the `RadiationWatch` -> `RadiationWatchPrinter` sketch.
+Go to your Arduino examples and launch the `RadiationWatch` -> `RadiationWatchPrinter` sketch. It outputs the current emission level at each  [Gamma ray](https://en.wikipedia.org/wiki/Gamma_ray) that hits the Pocket Geiger counter.
+
+Your done! Enjoy your *hopefully* low exposure to Gamma radiation.
 
 TODO Screenshot of the Serial output
+
+[Learn more](http://www.radiation-watch.co.uk/faqs) about the Radiation Watch Pocket Geiger counter. Actually it is not a proper Geiger-Müller counter, but it nevertheless effectively counts Gamma radiation.
 
 ## Usage
 
@@ -49,9 +53,11 @@ TODO Usage of the RadiationWatch class
 
 -----------------------
 
-Find this cool? Check out [our blog](http://blog.ytotech.com) or [send us a note](mailto:yoan@ytotech.com). Happy hacking!
+Find this cool? Check out [our blog](http://blog.ytotech.com) or [send us a note](mailto:yoan@ytotech.com).
 
-In research of an hacking idea? The [Playspoon fully integrated LCD Geiger counter](http://www.playspoon.com/wiki/index.php/GeigerCounter) may inspire you.
+In research of a building idea? The [Playspoon fully integrated LCD Geiger counter](http://www.playspoon.com/wiki/index.php/GeigerCounter) may inspire you.
+
+Happy hacking!
 
 ### Credits
 
