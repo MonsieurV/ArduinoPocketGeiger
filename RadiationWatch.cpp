@@ -5,16 +5,14 @@
 
 #include "Arduino.h"
 #include "RadiationWatch.h"
+#include <avr/interrupt.h>
 
 RadiationWatch* context;
 // Message buffer for serial output.
 char msg[256];
 
-// Function used to forward the call to the member function
-// RadiationWatch::onRadiationPulse when a radiation pulse is detected.
-// (The attachInterrupt() can't take a member function as parameter)
-// See. http://stackoverflow.com/questions/12662891/c-passing-member-function-as-argument
-void onRadiationPulseForwarder() {
+ISR(EXT_INT0_vect)
+{
   context->onRadiationPulse();
 }
 
@@ -64,17 +62,18 @@ void RadiationWatch::setup()
   pinMode(_noisePin,INPUT);
   digitalWrite(_noisePin,HIGH);
 
-  //Attach interrupt handler to catch incoming radiation pulses,
-  //and execute triggerRadiationPulse() when this happens.
-  attachInterrupt(_signIRQ, onRadiationPulseForwarder, RISING);
-
   //Initialize cpmHistory[]
-  for(int i = 0; i < kHistoryCount;i++ )
-  {
+  for(int i = 0; i < kHistoryCount;i++ ) {
     _cpmHistory[i] = 0;
   }
-
+  
   _prevTime = millis();
+
+  // Enable global interrupts (same as interrupts()).
+  sei();
+  // Enable external interrupt INT0.
+  EIMSK |= (1 << INT0);
+  EICRA |= (1 << ISC01);
 }
 
 void RadiationWatch::registerRPCallback(void (*callback)(void)) {
