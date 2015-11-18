@@ -7,7 +7,7 @@
 
 int PIN_TONE = 8;
 
-RadiationWatchPrinter radiationWatch(2, 5, 0);
+RadiationWatchPrinter radiationWatch(2, 3, 0);
 
 void onRadiationPulse() {
   // Output classic geiger counter tick noise

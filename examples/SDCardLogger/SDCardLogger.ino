@@ -3,7 +3,7 @@
 #include <SPI.h>
 
 const int chipSelect = 4;
-RadiationWatchPrinter radiationWatch(2, 5, 0);
+RadiationWatchPrinter radiationWatch(2, 3, 0);
 File dataFile;
 char* str;
 

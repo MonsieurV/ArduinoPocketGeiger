@@ -5,7 +5,7 @@
 
 #include "RadiationWatch.h"
 
-RadiationWatchPrinter radiationWatch(2, 5, 0);
+RadiationWatchPrinter radiationWatch(2, 3, 0);
 
 void onRadiationPulse() {
   Serial.println(radiationWatch.printStatus());

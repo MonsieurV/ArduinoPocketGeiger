@@ -1,6 +1,6 @@
 #include <RadiationWatch.h>
 
-RadiationWatch radiationWatch(2, 5, 0);
+RadiationWatch radiationWatch(2, 3, 0);
 
 void onRadiationPulse() {
   Serial.print("cpm = ");
@@ -12,7 +12,7 @@ void setup()
   //Serial setup
   //9600bps
   Serial.begin(9600);
-  
+
   radiationWatch.setup();
 
   // Register the callback.
@@ -25,4 +25,3 @@ void loop()
 {
   radiationWatch.loop();
 }
-

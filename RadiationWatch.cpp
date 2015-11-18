@@ -7,26 +7,25 @@
 #include "RadiationWatch.h"
 
 RadiationWatch* context;
-// Message buffer for serial output.
+// Message buffer for output.
 char msg[256];
 
-// Function used to forward the call to the member function
-// RadiationWatch::onRadiationPulse when a radiation pulse is detected.
-// (The attachInterrupt() can't take a member function as parameter)
-// See. http://stackoverflow.com/questions/12662891/c-passing-member-function-as-argument
-void onRadiationPulseForwarder() {
-  context->onRadiationPulse();
+
+void onRadiationISR() {
+  context->onRadiation();
 }
 
-//Called via Interrupt when a radiation pulse is detected
-void RadiationWatch::onRadiationPulse() {
-  // Serial.println(micros());
+void onNoiseISR() {
+  context->onNoise();
+}
+
+void RadiationWatch::onRadiation() {
   signCount++;
-  // if(_radiationPulseCallback != NULL) {
-  //   // Trigger the registered callback.
-  //   _radiationPulseCallback();
-  // }
-  // Serial.println(micros());
+  pulse = true;
+}
+
+void RadiationWatch::onNoise() {
+  noiseCount++;
 }
 
 RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPin(signPin), _noisePin(noisePin), _signIRQ(signIRQ)
@@ -36,9 +35,8 @@ RadiationWatch::RadiationWatch(int signPin, int noisePin, int signIRQ) : _signPi
 
   signCount = 0;
   noiseCount = 0;
+  pulse = false;
 
-  sON = 0;
-  nON = 0;
 
   _cpm = 0;
   cpmIndex = 0;
@@ -66,7 +64,8 @@ void RadiationWatch::setup()
 
   //Attach interrupt handler to catch incoming radiation pulses,
   //and execute triggerRadiationPulse() when this happens.
-  attachInterrupt(_signIRQ, onRadiationPulseForwarder, RISING);
+  attachInterrupt(_signIRQ, onRadiationISR, RISING);
+  attachInterrupt(1, onNoiseISR, RISING);
 
   //Initialize cpmHistory[]
   for(int i = 0; i < kHistoryCount;i++ )
@@ -96,20 +95,8 @@ unsigned long endAt = 0;
 
 void RadiationWatch::loop()
 {
-  // Raw data of Noise Pulse: Not-detected -> Low, Detected -> High
-  int noise = noisePin();
-
-  //Noise Pulse normally keeps high for about 100[usec]
-  if(noise==1 && nON==0)
-  {//Deactivate Noise Pulse counting for a while
-    nON = 1;
-    noiseCount++;
-  }else if(noise==0 && nON==1){
-    nON = 0;
-  }
-
   //Output readings to serial port, after 10000 loops
-  if(index==10000) //About 160-170 msec in Arduino Nano(ATmega328)
+  if(pulse || index==10000) //About 160-170 msec in Arduino Nano(ATmega328)
   {
     //Get current time
     int currTime = millis();
@@ -181,10 +168,14 @@ void RadiationWatch::loop()
     noiseCount = 0;
     interrupts();
 
-    Serial.println(printStatus());
   }
-
   index++;
+
+  if(pulse) {
+    pulse = false;
+    if(_radiationPulseCallback != NULL)
+      _radiationPulseCallback();
+  }
 }
 
 char* RadiationWatch::printKey() {}

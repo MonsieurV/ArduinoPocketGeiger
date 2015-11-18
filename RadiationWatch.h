@@ -31,8 +31,9 @@ class RadiationWatch
 
     // Called via Interrupt when a radiation pulse is detected
     // We make it public in order to be able to call it by interrupt.
-    // Don't call this function manually, or it will break the results.
-    void onRadiationPulse();
+    // Don't call this function manually, or it will falsify the results.
+    void onRadiation();
+    void onNoise();
 
   protected:
     int signPin();
@@ -49,15 +50,13 @@ class RadiationWatch
     int _signPin;   //Radiation Pulse (Yellow)
     int _noisePin;  //Vibration Noise Pulse (White)
     int _signIRQ;  //The IRQ number for the radiation pulse pin (depends on Arduino model)
+    bool volatile pulse;
     void (*_radiationPulseCallback)(void);
 
     int index; //Number of loops
 
     int volatile noiseCount;  //Counter for Noise Pulse
     int volatile signCount;  //Counter for Radiation Pulse
-
-    int sON;//Lock flag for Radiation Pulse
-    int nON;//Lock flag for Noise Puls
 
     double _cpm; //Count rate [cpm] of current
     int cpmIndex;//Position of current count rate on cpmHistory[]
