@@ -32,14 +32,14 @@ You can change the pins used by the library at its initialization. Remember to u
 signPin is the radiation pulse pin, which must match the signIrq number.
 noisePin is the noise pulse pin, which must match the noiseIrq number.
 */
-RadiationWatchPrinter radiationWatch(signPin, noisePin, signIrq, noiseIrq);
+RadiationWatch radiationWatch(signPin, noisePin, signIrq, noiseIrq);
 ```
 
 [Pocket Geiger Type 5 interface specification](http://www.radiation-watch.co.uk/uploads/5t.pdf).
 
 ### Launch the Serial printer example
 
-Go to your Arduino examples and launch the `RadiationWatch` -> `RadiationWatchPrinter` sketch. It outputs the current emission level at each  [Gamma ray](https://en.wikipedia.org/wiki/Gamma_ray) that hits the Pocket Geiger counter.
+Go to your Arduino examples and launch the `RadiationWatch` -> `SimpleSerialPrinter` sketch. It outputs the current emission level at each  [Gamma ray](https://en.wikipedia.org/wiki/Gamma_ray) that hits the Pocket Geiger counter.
 
 Your done! Enjoy your *hopefully* low exposure to Gamma radiation.
 
