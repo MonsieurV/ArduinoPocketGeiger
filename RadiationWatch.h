@@ -25,6 +25,9 @@ TODO:
   (again, the caller can easily turn the busy loop to a time-triggered loop if
   we rely on the time ellasped between each call)
 - Code the examples: SerialCsvLogger, SdCardLogger, HttpJsonLogger
+- A a LICENSE file to the code
+  (like https://github.com/MonsieurV/ArduinoTimeInterruptHell/blob/master/LICENSE)
+  Maybe ask thomasaw and RadiationWatch? Or refactor the code enough.
 */
 
 class RadiationWatch
