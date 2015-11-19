@@ -1,33 +1,29 @@
-//////////////////////////////////////////////////
-// Radiation-Watch.org
-// URL http://www.radiation-watch.org/
-//////////////////////////////////////////////////
-
 #include "RadiationWatch.h"
 
-int PIN_TONE = 8;
-
+const int PIN_TONE = 8;
 RadiationWatch radiationWatch(2, 3, 0, 1);
 
-void onRadiationPulse() {
-  // Output classic geiger counter tick noise
+void onRadiation()
+{
+  // Output classic geiger counter tick noise.
   tone(PIN_TONE, 800, 1);
-  Serial.println(radiationWatch.printStatus());
+  Serial.println(radiationWatch.csvStatus());
+}
+
+void onNoise()
+{
+  Serial.println("Argh, noise, please stop moving");
 }
 
 void setup()
 {
-  //Serial setup
-  //9600bps
   Serial.begin(9600);
-
   radiationWatch.setup();
-
-  // Register the callback.
-  radiationWatch.registerRPCallback(&onRadiationPulse);
-
-  Serial.println(radiationWatch.printKey());
-  Serial.println(radiationWatch.printStatus());
+  // Register the callbacks.
+  radiationWatch.registerRadiationCallback(&onRadiation);
+  radiationWatch.registerNoiseCallback(&onNoise);
+  Serial.println(radiationWatch.csvKeys());
+  Serial.println(radiationWatch.csvStatus());
 }
 
 void loop()

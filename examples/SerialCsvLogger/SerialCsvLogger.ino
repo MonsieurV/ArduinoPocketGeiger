@@ -8,7 +8,7 @@
 RadiationWatch radiationWatch(2, 3, 0, 1);
 
 void onRadiationPulse() {
-  Serial.println(radiationWatch.printStatus());
+  Serial.println(radiationWatch.csvStatus());
 }
 
 void setup()
@@ -22,8 +22,8 @@ void setup()
   // Register the callback.
   radiationWatch.registerRPCallback(&onRadiationPulse);
 
-  Serial.println(radiationWatch.printKey());
-  Serial.println(radiationWatch.printStatus());
+  Serial.println(radiationWatch.csvKeys());
+  Serial.println(radiationWatch.csvStatus());
 }
 
 void loop()

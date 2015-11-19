@@ -131,13 +131,13 @@ void RadiationWatch::loop()
   }
 }
 
-char* RadiationWatch::printKey()
+char* RadiationWatch::csvKeys()
 {
   // CSV-formatting for output.
   return "hour[h],sec[s],count,cpm,uSv/h,uSv/hError";
 }
 
-char* RadiationWatch::printStatus()
+char* RadiationWatch::csvStatus()
 {
   //String buffers of float values for serial output
   char cpmBuff[20];

@@ -2,32 +2,30 @@
 
 RadiationWatch radiationWatch(2, 3, 0, 1);
 
-void onRadiation() {
-  Serial.println("Gamma ray");
+void onRadiation()
+{
+  Serial.println("A wild gamma ray appeared");
 }
 
-void onNoise() {
-  Serial.println("Noise");
+void onNoise()
+{
+  Serial.println("Argh, noise, please stop moving");
 }
 
-void periodicStatusPrinter() {
-  Serial.println(radiationWatch.printStatus());
+void periodicStatusPrinter()
+{
+  Serial.println(radiationWatch.csvStatus());
 }
 
 void setup()
 {
-  //Serial setup
-  //9600bps
   Serial.begin(9600);
-
   radiationWatch.setup();
-
   // Register the callbacks.
   radiationWatch.registerRadiationCallback(&onRadiation);
   radiationWatch.registerNoiseCallback(&onNoise);
-
-  Serial.println(radiationWatch.printKey());
-  Serial.println(radiationWatch.printStatus());
+  Serial.println(radiationWatch.csvKeys());
+  Serial.println(radiationWatch.csvStatus());
 }
 
 void loop()

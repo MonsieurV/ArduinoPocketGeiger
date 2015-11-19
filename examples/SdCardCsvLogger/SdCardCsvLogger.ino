@@ -8,7 +8,7 @@ File dataFile;
 char* str;
 
 void onRadiationPulse() {
-  str = radiationWatch.printStatus();
+  str = radiationWatch.csvStatus();
   Serial.println(str);
   dataFile.println(str);
 }
@@ -31,10 +31,10 @@ void setup()
   radiationWatch.setup();
   radiationWatch.registerRPCallback(&onRadiationPulse);
   // Print first status on serial and on SD card.
-  str = radiationWatch.printKey();
+  str = radiationWatch.csvKeys();
   Serial.println(str);
   dataFile.println(str);
-  str = radiationWatch.printStatus();
+  str = radiationWatch.csvStatus();
   Serial.println(str);
   dataFile.println(str);
 }
