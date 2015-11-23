@@ -107,8 +107,8 @@ void RadiationWatch::loop()
       cpmTime = totalTime;
       // CPM time is limited to 20 minutes (20*60*1000).
       // TODO Use a define
-      if(cpmTime >= 120000L)
-        cpmTime = 120000L;
+      if(cpmTime >= 1200000L)
+        cpmTime = 1200000L;
       index = 0;
     }
     // Initialization for next 10000 loops.
