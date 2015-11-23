@@ -43,7 +43,6 @@ RadiationWatch::RadiationWatch(
   cpmIndex = 0;
   cpmIndexPrev = 0;
   totalTime = 0;
-  cpmTime = 0;
   _radiationCallback = NULL;
   _noiseCallback = NULL;
 }
@@ -84,7 +83,6 @@ void RadiationWatch::loop()
   // count radiation pulse when there are also noise. (use radiationFlag)
   if(index > 10000) {
     unsigned long currentTime = millis();
-    // No noise detected in 10000 loops.
     if(noiseCount == 0) {
       // Shift an array for counting log for each 6 seconds.
       int totalTimeSec = (int) totalTime / 1000;
@@ -104,14 +102,9 @@ void RadiationWatch::loop()
       _cpm += radiationCount;
       // Get the elapsed time.
       totalTime += abs(currentTime - previousTime);
-      cpmTime = totalTime;
-      // CPM time is limited to 20 minutes (20*60*1000).
-      // TODO Use a define
-      if(cpmTime >= 1200000L)
-        cpmTime = 1200000L;
       index = 0;
     }
-    // Initialization for next 10000 loops.
+    // Initialization for next N loops.
     previousTime = currentTime;
     radiationCount = 0;
     noiseCount = 0;
@@ -149,15 +142,14 @@ char* RadiationWatch::csvStatus()
   return _msg;
 }
 
-double RadiationWatch::cpmTimeMin()
+unsigned long RadiationWatch::duration()
 {
-  // TODO Transform to a macro
-  return ((long) cpmTime / 1000) / 60.0;
+  return totalTime;
 }
 
 double RadiationWatch::cpm()
 {
-  double min = cpmTimeMin();
+  double min = cpmTime();
   return (min > 0) ? _cpm / min : 0;
 }
 
@@ -171,6 +163,6 @@ double RadiationWatch::uSvh()
 
 double RadiationWatch::uSvhError()
 {
-  double min = cpmTimeMin();
+  double min = cpmTime();
   return (min > 0) ? sqrt(_cpm) / min / kAlpha : 0;
 }

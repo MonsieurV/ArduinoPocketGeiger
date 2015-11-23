@@ -15,9 +15,6 @@
 
 /*
 TODO:
-- Code a clearer time management
-  (separate time as hours and seconds is great for priting,
-  but not handy as a programmable interface)
 - Allows for a periodic status printer callback?
   (note: this can be done easily outside the lib, so why bother? Why adding clubersome?)
 - On the loop(), update the stats from the time elapsed, not a number of loops which
@@ -60,10 +57,10 @@ class RadiationWatch
     char* csvStatus();
 
   protected:
-    double cpmTimeMin();
-    // TODO Process the max CPM time from the kHistoryCount:
-    // max time (min) = kHistoryCount * 6 / 60 (currently 20 minutes)
     static const unsigned int kHistoryCount = 200;
+    // TODO Process the max CPM time from the kHistoryCount:
+    // kHistoryCount * 6 / 60 * 60 * 1000 (currently 20 minutes)
+    static const unsigned long maxCpmTime = kHistoryCount * 6 * 20 * 1000L;
     // History of count rates.
     double _cpmHistory[kHistoryCount];
     unsigned long previousTime;
@@ -77,8 +74,14 @@ class RadiationWatch
     int cpmIndexPrev;
     // Elapsed time of measurement (milliseconds).
     unsigned long totalTime;
-    // Time settings for CPM calcuaration.
-    unsigned long cpmTime;
+    // Elapsed time of measurement used for CPM calculation (in minutes).
+    double cpmTime()
+    {
+      unsigned long cpmTime = totalTime;
+      if(cpmTime >= maxCpmTime)
+        cpmTime = maxCpmTime;
+      return ((long) cpmTime / 1000) / 60.0;
+    }
     // Pin settings.
     int _signPin;
     int _noisePin;
