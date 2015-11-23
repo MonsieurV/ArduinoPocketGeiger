@@ -5,16 +5,12 @@ RadiationWatch radiationWatch(2, 3, 0, 1);
 void onRadiation()
 {
   Serial.println("A wild gamma ray appeared");
+  Serial.println(radiationWatch.csvStatus());
 }
 
 void onNoise()
 {
   Serial.println("Argh, noise, please stop moving");
-}
-
-void periodicStatusPrinter()
-{
-  Serial.println(radiationWatch.csvStatus());
 }
 
 void setup()

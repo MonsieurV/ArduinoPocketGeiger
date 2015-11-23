@@ -20,10 +20,10 @@ TODO:
   but not handy as a programmable interface)
 - Allows for a periodic status printer callback?
   (note: this can be done easily outside the lib, so why bother? Why adding clubersome?)
-- On the loop(), update the stats from the time ellasped, not a number of loops which
+- On the loop(), update the stats from the time elapsed, not a number of loops which
   can sensibly varies by the work done outside. Maybe do not do a busy loop?
   (again, the caller can easily turn the busy loop to a time-triggered loop if
-  we rely on the time ellasped between each call)
+  we rely on the time elapsed between each call)
 - Code the examples: SerialCsvLogger, SdCardLogger, HttpJsonLogger
 - A a LICENSE file to the code
   (like https://github.com/MonsieurV/ArduinoTimeInterruptHell/blob/master/LICENSE)
@@ -60,11 +60,11 @@ class RadiationWatch
     char* csvStatus();
 
   protected:
-    double cpmTime();
+    double cpmTimeMin();
     static const unsigned int kHistoryCount = 200;
     // History of count rates.
     double _cpmHistory[kHistoryCount];
-    int _prevTime;
+    unsigned long previousTime;
     // Number of loops.
     int index;
     // Count rate [cpm] of current.
@@ -74,14 +74,9 @@ class RadiationWatch
     // Flag to prevent duplicative counting.
     int cpmIndexPrev;
     // Elapsed time of measurement (milliseconds).
-    unsigned long _duration;
-    // Elapsed time of measurement (seconds).
-    int totalSec;
-    // Elapsed time of measurement (hours).
-    int totalHour;
+    unsigned long totalTime;
     // Time settings for CPM calcuaration.
-    int cpmTimeMSec;
-    int cpmTimeSec;
+    unsigned long cpmTime;
     // Pin settings.
     int _signPin;
     int _noisePin;

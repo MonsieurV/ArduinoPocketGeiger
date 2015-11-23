@@ -6,6 +6,8 @@ An Arduino library to interface with the [Radiation Watch Pocket Geiger counter]
 
 The library monitors the Pocket Geiger through interrupts, processes the hourly [Sievert dose](https://en.wikipedia.org/wiki/Sievert) and allows to get back the data using a simple interface. It comes with examples to print data to Serial, log it on a SD card or through internet, giving you some ideas of what to do with it.
 
+[Learn more](http://www.radiation-watch.co.uk/faqs) about the Radiation Watch Pocket Geiger counter. Actually it is not a proper Geiger-Müller counter, but it nevertheless effectively counts Gamma radiation.
+
 ## Getting started
 
 ### Install the library
@@ -39,13 +41,11 @@ RadiationWatch radiationWatch(signPin, noisePin, signIrq, noiseIrq);
 
 ### Launch the Serial printer example
 
-Go to your Arduino examples and launch the `RadiationWatch` -> `SimpleSerialPrinter` sketch. It outputs the current emission level at each  [Gamma ray](https://en.wikipedia.org/wiki/Gamma_ray) that hits the Pocket Geiger counter.
+Go to your Arduino examples and launch the `RadiationWatch` -> `SimpleSerialPrinter` sketch. It outputs the current emission level for each  [gamma ray](https://en.wikipedia.org/wiki/Gamma_ray) that hits the Pocket Geiger counter.
 
-Your done! Enjoy your *hopefully* low exposure to Gamma radiation.
+Your done! Enjoy your -hopefully- low exposure to Gamma radiation.
 
 TODO Screenshot of the Serial output
-
-[Learn more](http://www.radiation-watch.co.uk/faqs) about the Radiation Watch Pocket Geiger counter. Actually it is not a proper Geiger-Müller counter, but it nevertheless effectively counts Gamma radiation.
 
 ## Usage
 

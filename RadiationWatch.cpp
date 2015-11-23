@@ -1,3 +1,15 @@
+/*
+ * Radiation Watch Pocket Geiger Type 5 library for Arduino.
+ *
+ * Documentation and usage at:
+ * https://github.com/MonsieurV/RadiationWatch
+ *
+ * Contributed by:
+ * Radiation Watch <http://www.radiation-watch.org/>
+ * thomasaw <https://github.com/thomasaw>
+ * Tourmal <https://github.com/Toumal>
+ * Yoan Tournade <yoan@ytotech.com>
+ */
 #include "Arduino.h"
 #include "RadiationWatch.h"
 
@@ -6,7 +18,7 @@ int volatile noiseCount = 0;
 bool volatile radiationFlag = false;
 bool volatile noiseFlag = false;
 // Message buffer for output.
-char msg[256];
+char _msg[256];
 
 void _onRadiationHandler()
 {
@@ -25,16 +37,13 @@ RadiationWatch::RadiationWatch(
     _signPin(signPin), _noisePin(noisePin), _signIrq(signIrq),
     _noiseIrq(noiseIrq)
 {
-  _prevTime = 0;
+  previousTime = 0;
   index = 0;
   _cpm = 0;
   cpmIndex = 0;
   cpmIndexPrev = 0;
-  _duration = 0;
-  totalSec = 0;
-  totalHour = 0;
-  cpmTimeMSec = 0;
-  cpmTimeSec = 0;
+  totalTime = 0;
+  cpmTime = 0;
   _radiationCallback = NULL;
   _noiseCallback = NULL;
 }
@@ -48,8 +57,8 @@ void RadiationWatch::setup()
   // Initialize cpmHistory[].
   for(int i = 0; i < kHistoryCount; i++)
     _cpmHistory[i] = 0;
-  // Init time.
-  _prevTime = millis();
+  // Init measurement time.
+  previousTime = millis();
   // Attach interrupt handlers.
   attachInterrupt(_signIrq, _onRadiationHandler, RISING);
   attachInterrupt(_noiseIrq, _onNoiseHandler, RISING);
@@ -69,17 +78,18 @@ void RadiationWatch::loop()
 {
   // Process radiation dose.
   // About 160-170 msec in Arduino Nano(ATmega328).
-  // TODO: do not use an index but measure time ellasped to determine when
+  // TODO: do not use an index but measure time elapsed to determine when
   // to process the statistics.
   // TODO Update on radiation pulse, but not too fast (let a lag) so we does not
   // count radiation pulse when there are also noise. (use radiationFlag)
   if(index > 10000) {
-    int currentTime = millis();
+    unsigned long currentTime = millis();
     // No noise detected in 10000 loops.
     if(noiseCount == 0) {
-      // Shift an array for counting log for each 6 sec.
-      if(totalSec % 6 == 0 && cpmIndexPrev != totalSec) {
-        cpmIndexPrev = totalSec;
+      // Shift an array for counting log for each 6 seconds.
+      int totalTimeSec = (int) totalTime / 1000;
+      if(totalTimeSec % 6 == 0 && cpmIndexPrev != totalTimeSec) {
+        cpmIndexPrev = totalTimeSec;
         cpmIndex++;
         if(cpmIndex >= kHistoryCount)
           cpmIndex = 0;
@@ -92,29 +102,17 @@ void RadiationWatch::loop()
       _cpmHistory[cpmIndex] += radiationCount;
       // Add number of counts.
       _cpm += radiationCount;
-      // Get ready time for 10000 loops.
-      cpmTimeMSec += abs(currentTime - _prevTime);
-      // Transform from msec. to sec. (to prevent overflow).
-      if(cpmTimeMSec >= 1000) {
-        cpmTimeMSec -= 1000;
-        // Add measurement time to calcurate cpm readings (max=20min.)
-        if(cpmTimeSec >= 20*60)
-          cpmTimeSec = 20*60;
-        else
-          cpmTimeSec++;
-        // Total measurement time.
-        totalSec++;
-        //Transform from sec. to hour. (to prevent overflow).
-        const int kSecondsInHour = 60 * 60;
-        if(totalSec >= kSecondsInHour) {
-          totalSec -= kSecondsInHour;
-          totalHour++;
-        }
-      }
+      // Get the elapsed time.
+      totalTime += abs(currentTime - previousTime);
+      cpmTime = totalTime;
+      // CPM time is limited to 20 minutes (20*60*1000).
+      // TODO Use a define
+      if(cpmTime >= 120000L)
+        cpmTime = 120000L;
       index = 0;
     }
     // Initialization for next 10000 loops.
-    _prevTime = currentTime;
+    previousTime = currentTime;
     radiationCount = 0;
     noiseCount = 0;
     interrupts();
@@ -134,41 +132,35 @@ void RadiationWatch::loop()
 char* RadiationWatch::csvKeys()
 {
   // CSV-formatting for output.
-  return "hour[h],sec[s],count,cpm,uSv/h,uSv/hError";
+  return "time(ms),count,cpm,uSv/h,uSv/hError";
 }
 
 char* RadiationWatch::csvStatus()
 {
-  //String buffers of float values for serial output
-  char cpmBuff[20];
-  char uSvBuff[20];
-  char uSvdBuff[20];
-  // Elapsed time of measurement (max=20min.)
-  double min = cpmTime();
+  // Format message. We must use dtostrf() to format float to string.
+  // String buffers of float values for output.
+  char cpmBuff[10];
+  char uSvBuff[10];
+  char uSvdBuff[10];
   dtostrf(cpm(), -1, 3, cpmBuff);
-  dtostrf(uSvh(), -1, 3, uSvBuff);  // uSv/h
-  dtostrf(uSvhError(), -1, 3, uSvdBuff);  // error of uSv/h
-  // Format message.
-  sprintf(msg, "%d,%d.%03d,%d,%s,%s,%s",
-    totalHour,totalSec,
-    cpmTimeMSec,
-    radiationCount,
-    cpmBuff,
-    uSvBuff,
-    uSvdBuff
-    );
-  return msg;
+  dtostrf(uSvh(), -1, 3, uSvBuff);
+  dtostrf(uSvhError(), -1, 3, uSvdBuff);
+  sprintf(_msg, "%lu,%d,%s,%s,%s",
+    totalTime, radiationCount, cpmBuff, uSvBuff, uSvdBuff);
+  return _msg;
 }
 
-double RadiationWatch::cpmTime()
+double RadiationWatch::cpmTimeMin()
 {
-  return cpmTimeSec / 60.0;
+  // TODO Transform to a macro
+  return ((long) cpmTime / 1000) / 60.0;
 }
 
 double RadiationWatch::cpm()
 {
-  double min = cpmTime();
-  return (min) ? _cpm / min : 0;
+  double min = cpmTimeMin();
+  Serial.println(min);
+  return (min > 0) ? _cpm / min : 0;
 }
 
 // cpm = uSv x alpha
@@ -181,6 +173,6 @@ double RadiationWatch::uSvh()
 
 double RadiationWatch::uSvhError()
 {
-  double min = cpmTime();
-  return (min) ? sqrt(_cpm) / min / kAlpha : 0;
+  double min = cpmTimeMin();
+  return (min > 0) ? sqrt(_cpm) / min / kAlpha : 0;
 }
