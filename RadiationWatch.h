@@ -61,6 +61,8 @@ class RadiationWatch
 
   protected:
     double cpmTimeMin();
+    // TODO Process the max CPM time from the kHistoryCount:
+    // max time (min) = kHistoryCount * 6 / 60 (currently 20 minutes)
     static const unsigned int kHistoryCount = 200;
     // History of count rates.
     double _cpmHistory[kHistoryCount];

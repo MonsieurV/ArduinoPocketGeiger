@@ -137,8 +137,7 @@ char* RadiationWatch::csvKeys()
 
 char* RadiationWatch::csvStatus()
 {
-  // Format message. We must use dtostrf() to format float to string.
-  // String buffers of float values for output.
+  // Format message. We use dtostrf() to format float to string.
   char cpmBuff[10];
   char uSvBuff[10];
   char uSvdBuff[10];
@@ -159,7 +158,6 @@ double RadiationWatch::cpmTimeMin()
 double RadiationWatch::cpm()
 {
   double min = cpmTimeMin();
-  Serial.println(min);
   return (min > 0) ? _cpm / min : 0;
 }
 
