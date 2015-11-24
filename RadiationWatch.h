@@ -67,8 +67,6 @@ class RadiationWatch
     // History of count rates.
     double _cpmHistory[kHistoryCount];
     unsigned long previousTime;
-    // Number of loops.
-    int index;
     // Count rate [cpm] of current.
     double _cpm;
     // Position of current count rate on cpmHistory[].

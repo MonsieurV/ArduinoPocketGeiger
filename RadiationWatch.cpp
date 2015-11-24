@@ -37,7 +37,6 @@ RadiationWatch::RadiationWatch(
     _noiseIrq(noiseIrq)
 {
   previousTime = 0;
-  index = 0;
   _cpm = 0;
   cpmIndex = 0;
   cpmIndexPrev = 0;
@@ -62,25 +61,22 @@ void RadiationWatch::setup()
   attachInterrupt(_noiseIrq, _onNoiseHandler, RISING);
 }
 
-void RadiationWatch::registerRadiationCallback(void (*callback)(void))
-{
-  _radiationCallback = callback;
-}
-
-void RadiationWatch::registerNoiseCallback(void (*callback)(void))
-{
-  _noiseCallback = callback;
-}
+unsigned long loopTime = 0;
+unsigned int loopElasped = 0;
 
 void RadiationWatch::loop()
 {
-  // Process radiation dose.
+  // Process radiation dose if the process period has elapsed.
+  loopElasped = loopElasped + abs(millis() - loopTime);
+  loopTime = millis();
+
   // About 160-170 msec in Arduino Nano(ATmega328).
-  // TODO: do not use an index but measure time elapsed to determine when
-  // to process the statistics.
+  // TODO To a constant.
+
   // TODO Update on radiation pulse, but not too fast (let a lag) so we does not
   // count radiation pulse when there are also noise. (use radiationFlag)
-  if(index > 10000) {
+  if(loopElasped > 160) {
+    // TODO Why it overflows? Serial.println(loopElasped);
     unsigned long currentTime = millis();
     if(noiseCount == 0) {
       // Shift an array for counting log for each 6 seconds.
@@ -101,7 +97,8 @@ void RadiationWatch::loop()
       _cpm += radiationCount;
       // Get the elapsed time.
       totalTime += abs(currentTime - previousTime);
-      index = 0;
+      // TODO Maybe move? (reset even if there is noise)
+      loopElasped = 0;
     }
     // Initialization for next N loops.
     previousTime = currentTime;
@@ -109,7 +106,6 @@ void RadiationWatch::loop()
     noiseCount = 0;
     interrupts();
   }
-  index++;
   // Enable the callbacks.
   if(_radiationCallback && radiationFlag) {
     radiationFlag = false;
@@ -119,6 +115,16 @@ void RadiationWatch::loop()
     noiseFlag = false;
     _noiseCallback();
   }
+}
+
+void RadiationWatch::registerRadiationCallback(void (*callback)(void))
+{
+  _radiationCallback = callback;
+}
+
+void RadiationWatch::registerNoiseCallback(void (*callback)(void))
+{
+  _noiseCallback = callback;
 }
 
 char* RadiationWatch::csvKeys()
