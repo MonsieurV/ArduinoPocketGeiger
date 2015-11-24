@@ -45,7 +45,7 @@ Go to your Arduino examples and launch the `RadiationWatch` -> `SimpleSerialPrin
 
 Your done! Enjoy your -hopefully- low exposure to Gamma radiation.
 
-TODO Screenshot of the Serial output
+![](/misc/snapshot_get_starter_example.png?raw=true "Serial output for the example")
 
 ## Usage
 
