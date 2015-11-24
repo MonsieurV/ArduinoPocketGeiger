@@ -105,15 +105,15 @@ void RadiationWatch::loop()
     radiationCount = 0;
     noiseCount = 0;
     interrupts();
-  }
-  // Enable the callbacks.
-  if(_radiationCallback && radiationFlag) {
-    radiationFlag = false;
-    _radiationCallback();
-  }
-  if(_noiseCallback && noiseFlag) {
-    noiseFlag = false;
-    _noiseCallback();
+    // Enable the callbacks.
+    if(_radiationCallback && radiationFlag) {
+      radiationFlag = false;
+      _radiationCallback();
+    }
+    if(_noiseCallback && noiseFlag) {
+      noiseFlag = false;
+      _noiseCallback();
+    }
   }
 }
 
