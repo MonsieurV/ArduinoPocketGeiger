@@ -12,6 +12,7 @@
  */
 #ifndef RadiationWatch_h
 #define RadiationWatch_h
+#include "Arduino.h"
 
 /*
 TODO:
@@ -53,7 +54,9 @@ class RadiationWatch
      * is detected. */
     void registerNoiseCallback(void (*callback)(void));
 
+    // Get CSV-formatted keys for the status values.
     char* csvKeys();
+    // Get CSV-formatted current values.
     char* csvStatus();
 
   protected:
@@ -75,12 +78,9 @@ class RadiationWatch
     // Elapsed time of measurement (milliseconds).
     unsigned long totalTime;
     // Elapsed time of measurement used for CPM calculation (in minutes).
-    double cpmTime()
+    inline double cpmTime()
     {
-      unsigned long cpmTime = totalTime;
-      if(cpmTime >= maxCpmTime)
-        cpmTime = maxCpmTime;
-      return ((long) cpmTime / 1000) / 60.0;
+      return ((long) min(totalTime, maxCpmTime) / 1000) / 60.0;
     }
     // Pin settings.
     int _signPin;

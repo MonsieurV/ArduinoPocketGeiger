@@ -10,7 +10,6 @@
  * Tourmal <https://github.com/Toumal>
  * Yoan Tournade <yoan@ytotech.com>
  */
-#include "Arduino.h"
 #include "RadiationWatch.h"
 
 int volatile radiationCount = 0;
