@@ -12,6 +12,8 @@
  */
 #ifndef RadiationWatch_h
 #define RadiationWatch_h
+#define HISTORY_LENGTH 200
+#define PROCESS_PERIOD 160
 #include "Arduino.h"
 
 /*
@@ -60,7 +62,7 @@ class RadiationWatch
     char* csvStatus();
 
   protected:
-    static const unsigned int kHistoryCount = 200;
+    static const unsigned int kHistoryCount = HISTORY_LENGTH;
     // TODO Process the max CPM time from the kHistoryCount:
     // kHistoryCount * 6 / 60 * 60 * 1000 (currently 20 minutes)
     static const unsigned long maxCpmTime = kHistoryCount * 6 * 20 * 1000L;

@@ -69,14 +69,7 @@ void RadiationWatch::loop()
   // Process radiation dose if the process period has elapsed.
   loopElasped = loopElasped + abs(millis() - loopTime);
   loopTime = millis();
-
-  // About 160-170 msec in Arduino Nano(ATmega328).
-  // TODO To a constant.
-
-  // TODO Update on radiation pulse, but not too fast (let a lag) so we does not
-  // count radiation pulse when there are also noise. (use radiationFlag)
-  if(loopElasped > 160) {
-    // TODO Why it overflows? Serial.println(loopElasped);
+  if(loopElasped > PROCESS_PERIOD * 1000) {
     unsigned long currentTime = millis();
     if(noiseCount == 0) {
       // Shift an array for counting log for each 6 seconds.
@@ -154,11 +147,11 @@ unsigned long RadiationWatch::duration()
 
 double RadiationWatch::cpm()
 {
+  // cpm = uSv x alpha
   double min = cpmTime();
   return (min > 0) ? _cpm / min : 0;
 }
 
-// cpm = uSv x alpha
 static const double kAlpha = 53.032;
 
 double RadiationWatch::uSvh()
