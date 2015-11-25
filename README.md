@@ -63,9 +63,7 @@ TODO Usage of the RadiationWatch class
 
 -----------------------
 
-Find this cool? Check out [our blog](http://blog.ytotech.com) or [send us a note](mailto:yoan@ytotech.com).
-
-In research of a building idea? The [Playspoon fully integrated LCD Geiger counter](http://www.playspoon.com/wiki/index.php/GeigerCounter) may inspire you.
+Find this cool? Check out [our blog](http://blog.ytotech.com) or [send us a note](mailto:yoan@ytotech.com). Researching an assembly idea? The [Playspoon fully integrated LCD Geiger counter](http://www.playspoon.com/wiki/index.php/GeigerCounter) may inspire you.
 
 Happy hacking!
 
