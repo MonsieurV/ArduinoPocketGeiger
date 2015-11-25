@@ -5,7 +5,9 @@ RadiationWatch radiationWatch(2, 3, 0, 1);
 void onRadiation()
 {
   Serial.println("A wild gamma ray appeared");
-  Serial.println(radiationWatch.csvStatus());
+  Serial.print(radiationWatch.uSvh());
+  Serial.print(" uSv/h +/- ");
+  Serial.println(radiationWatch.uSvhError());
 }
 
 void onNoise()
@@ -20,8 +22,6 @@ void setup()
   // Register the callbacks.
   radiationWatch.registerRadiationCallback(&onRadiation);
   radiationWatch.registerNoiseCallback(&onNoise);
-  Serial.println(radiationWatch.csvKeys());
-  Serial.println(radiationWatch.csvStatus());
 }
 
 void loop()
