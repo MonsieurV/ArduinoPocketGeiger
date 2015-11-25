@@ -17,7 +17,7 @@ int volatile noiseCount = 0;
 bool volatile radiationFlag = false;
 bool volatile noiseFlag = false;
 // Message buffer for output.
-char _msg[256];
+char _msg[100];
 
 void _onRadiationHandler()
 {
