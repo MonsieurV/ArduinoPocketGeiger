@@ -41,11 +41,21 @@ RadiationWatch radiationWatch(signPin, noisePin, signIrq, noiseIrq);
 
 ### Launch the Serial printer example
 
-Go to your Arduino examples and launch the `RadiationWatch` -> `SimpleSerialPrinter` sketch. It outputs the current emission level for each  [gamma ray](https://en.wikipedia.org/wiki/Gamma_ray) that hits the Pocket Geiger counter.
+Go to your Arduino examples and launch the `RadiationWatch` -> `SimpleSerialPrinter` sketch. It outputs to the serial port the current emission level for each  [gamma ray](https://en.wikipedia.org/wiki/Gamma_ray) that hits the Pocket Geiger counter.
 
 Your done! Enjoy your -hopefully- low exposure to Gamma radiation.
 
 ![](/misc/snapshot_get_starter_example.png?raw=true "Serial output for the example")
+
+### Plot in real-time with Python
+
+Load the `RadiationWatch` -> `SerialCsvLogger` sketch to your Arduino. Then launch the Python script [`serial_plot.py`](/examples/SerialCsvLogger/sserial_plot.py).
+
+You need Python installed with [matplotlib](http://matplotlib.org/) and [pyserial](https://github.com/pyserial/pyserial). You may need to set the serial port corresponding to your Arduino in the Python script.
+
+The script will output the radiation level in real-time.
+
+![](/misc/real_time_plotting.gif?raw=true "Real-time plotting")
 
 ## Usage
 

@@ -11,15 +11,23 @@ import serial
 import matplotlib.pyplot as plt
 
 # Edit the port, specifying either a name, or a number.
-# port = '/dev/ttyACM0'
 port = 0
+# port = '/dev/ttyACM0'
 
 fig = plt.figure()
 axes = fig.add_subplot(111)
-x = []
-y = []
-li, = axes.plot(x, y)
+times = []
+bottomError = []
+radiation = []
+topError = []
+bottomLine, = axes.plot(times, bottomError, color='green', label=u'Error (-)')
+radiationLine, = axes.plot(times, radiation, color='blue', label=u'Radiation dose')
+topLine, = axes.plot(times, topError, color='green', label=u'Error (+)')
 plt.ion()
+plt.legend(loc='best')
+plt.xlabel(u'Time (min)')
+plt.ylabel(u'Dose (μSv/h)')
+plt.title(u'Gamma rays (γ)')
 plt.show()
 
 with serial.Serial(port, 9600) as ser:
@@ -30,9 +38,13 @@ with serial.Serial(port, 9600) as ser:
         (time, count, cpm, uSvh, uSvhError) = line.split(',')
         if time == 'time(ms)':
             continue
-        x.append(int(time))
-        y.append(float(uSvh))
-        li.set_data(x, y)
+        times.append(float(time) / 1000 / 60)
+        bottomError.append(float(uSvh) - float(uSvhError))
+        radiation.append(float(uSvh))
+        topError.append(float(uSvh) + float(uSvhError))
+        bottomLine.set_data(times, bottomError)
+        radiationLine.set_data(times, radiation)
+        topLine.set_data(times, topError)
         axes.relim()
         axes.autoscale_view(True,True,True)
         plt.draw()
