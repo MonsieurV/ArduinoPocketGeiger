@@ -16,20 +16,6 @@
 #define PROCESS_PERIOD 160
 #include "Arduino.h"
 
-/*
-TODO:
-- Allows for a periodic status printer callback?
-  (note: this can be done easily outside the lib, so why bother? Why adding clubersome?)
-- On the loop(), update the stats from the time elapsed, not a number of loops which
-  can sensibly varies by the work done outside. Maybe do not do a busy loop?
-  (again, the caller can easily turn the busy loop to a time-triggered loop if
-  we rely on the time elapsed between each call)
-- Code the examples: SerialCsvLogger, SdCardLogger, HttpJsonLogger
-- A a LICENSE file to the code
-  (like https://github.com/MonsieurV/ArduinoTimeInterruptHell/blob/master/LICENSE)
-  Maybe ask thomasaw and RadiationWatch? Or refactor the code enough.
-*/
-
 class RadiationWatch
 {
   public:
