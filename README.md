@@ -57,9 +57,17 @@ The script will output the radiation level in real-time.
 
 ![](/misc/real_time_plotting.gif?raw=true "Real-time plotting")
 
-## Usage
+### Log the results to an SD card
 
-TODO Usage of the RadiationWatch class
+You'll need the [Arduino Etherned shield](https://www.arduino.cc/en/Main/ArduinoEthernetShield) (recommanded) or the [SparkFun microSD shield](https://www.sparkfun.com/products/12761).
+
+Load the `RadiationWatch` -> `SdCardCsvLogger` sketch to your Arduino. The radiation measurements will be stored in a `rad.csv` file on the microSD card, so you can then retrieve and process them later.
+
+This sketch do not run properly on the Arduino Uno or other ATmega328-based chips, as it requires more than 2k of [SRAM memory](https://www.arduino.cc/en/Tutorial/Memory).
+
+## Notes
+
+* Remember the Pocket Geiger can't record correctly in presence of movement, so if you use a battery powered build keep the whole stationary during the measurements.
 
 -----------------------
 

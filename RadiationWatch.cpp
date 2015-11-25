@@ -12,12 +12,12 @@
  */
 #include "RadiationWatch.h"
 
-int volatile radiationCount = 0;
+byte volatile radiationCount = 0;
 int volatile noiseCount = 0;
 bool volatile radiationFlag = false;
 bool volatile noiseFlag = false;
 // Message buffer for output.
-char _msg[100];
+char _msg[60];
 
 void _onRadiationHandler()
 {
@@ -32,7 +32,7 @@ void _onNoiseHandler()
 }
 
 RadiationWatch::RadiationWatch(
-  int signPin, int noisePin, int signIrq, int noiseIrq):
+  byte signPin, byte noisePin, byte signIrq, byte noiseIrq):
     _signPin(signPin), _noisePin(noisePin), _signIrq(signIrq),
     _noiseIrq(noiseIrq)
 {
@@ -52,7 +52,7 @@ void RadiationWatch::setup()
   pinMode(_noisePin, INPUT);
   digitalWrite(_noisePin, HIGH);
   // Initialize cpmHistory[].
-  for(int i = 0; i < kHistoryCount; i++)
+  for(int i = 0; i < HISTORY_LENGTH; i++)
     _cpmHistory[i] = 0;
   // Init measurement time.
   previousTime = millis();
@@ -69,7 +69,7 @@ void RadiationWatch::loop()
   // Process radiation dose if the process period has elapsed.
   loopElasped = loopElasped + abs(millis() - loopTime);
   loopTime = millis();
-  if(loopElasped > PROCESS_PERIOD * 1000) {
+  if(loopElasped > PROCESS_PERIOD) {
     unsigned long currentTime = millis();
     if(noiseCount == 0) {
       // Shift an array for counting log for each 6 seconds.
@@ -77,7 +77,7 @@ void RadiationWatch::loop()
       if(totalTimeSec % 6 == 0 && cpmIndexPrev != totalTimeSec) {
         cpmIndexPrev = totalTimeSec;
         cpmIndex++;
-        if(cpmIndex >= kHistoryCount)
+        if(cpmIndex >= HISTORY_LENGTH)
           cpmIndex = 0;
         if(_cpmHistory[cpmIndex] > 0)
           _cpm -= _cpmHistory[cpmIndex];
@@ -90,7 +90,6 @@ void RadiationWatch::loop()
       _cpm += radiationCount;
       // Get the elapsed time.
       totalTime += abs(currentTime - previousTime);
-      // TODO Maybe move? (reset even if there is noise)
       loopElasped = 0;
     }
     // Initialization for next N loops.
@@ -129,9 +128,9 @@ char* RadiationWatch::csvKeys()
 char* RadiationWatch::csvStatus()
 {
   // Format message. We use dtostrf() to format float to string.
-  char cpmBuff[10];
-  char uSvBuff[10];
-  char uSvdBuff[10];
+  char cpmBuff[8];
+  char uSvBuff[8];
+  char uSvdBuff[8];
   dtostrf(cpm(), -1, 3, cpmBuff);
   dtostrf(uSvh(), -1, 3, uSvBuff);
   dtostrf(uSvhError(), -1, 3, uSvdBuff);
@@ -145,22 +144,22 @@ unsigned long RadiationWatch::duration()
   return totalTime;
 }
 
-double RadiationWatch::cpm()
+float RadiationWatch::cpm()
 {
   // cpm = uSv x alpha
-  double min = cpmTime();
+  float min = cpmTime();
   return (min > 0) ? _cpm / min : 0;
 }
 
-static const double kAlpha = 53.032;
+static const float kAlpha = 53.032;
 
-double RadiationWatch::uSvh()
+float RadiationWatch::uSvh()
 {
   return cpm() / kAlpha;
 }
 
-double RadiationWatch::uSvhError()
+float RadiationWatch::uSvhError()
 {
-  double min = cpmTime();
+  float min = cpmTime();
   return (min > 0) ? sqrt(_cpm) / min / kAlpha : 0;
 }
