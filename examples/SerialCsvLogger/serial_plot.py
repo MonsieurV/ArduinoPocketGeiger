@@ -3,7 +3,8 @@
 """ Plot in real-time the gamma radiation level being logged to the serial
 port. Because it's way more fun than reading a terminal.
 
-You will need Python with MatPlotLib installed on your box.
+You will need Python with the matplotlib and pyserial packages installed on
+your box.
 
 Configure the serial port to which the Arduino is connected. By default,
 we select the first port, but that may not be the good one."""
