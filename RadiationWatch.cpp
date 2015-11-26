@@ -73,7 +73,7 @@ void RadiationWatch::loop()
     unsigned long currentTime = millis();
     if(noiseCount == 0) {
       // Shift an array for counting log for each 6 seconds.
-      int totalTimeSec = (int) totalTime / 1000;
+      unsigned int totalTimeSec = (int) totalTime / 1000;
       if(totalTimeSec % 6 == 0 && cpmIndexPrev != totalTimeSec) {
         cpmIndexPrev = totalTimeSec;
         cpmIndex++;

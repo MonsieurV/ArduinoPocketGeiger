@@ -59,7 +59,7 @@ class RadiationWatch
     // Position of current count rate on cpmHistory[].
     byte cpmIndex;
     // Flag to prevent duplicative counting.
-    byte cpmIndexPrev;
+    unsigned int cpmIndexPrev;
     // Elapsed time of measurement (milliseconds).
     unsigned long totalTime;
     // Elapsed time of measurement used for CPM calculation (in minutes).
