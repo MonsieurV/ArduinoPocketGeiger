@@ -12,12 +12,12 @@
  */
 #include "RadiationWatch.h"
 
-int volatile radiationCount = 0;
+byte volatile radiationCount = 0;
 int volatile noiseCount = 0;
 bool volatile radiationFlag = false;
 bool volatile noiseFlag = false;
 // Message buffer for output.
-char _msg[100];
+char _msg[60];
 
 void _onRadiationHandler()
 {
@@ -32,7 +32,7 @@ void _onNoiseHandler()
 }
 
 RadiationWatch::RadiationWatch(
-  int signPin, int noisePin, int signIrq, int noiseIrq):
+  byte signPin, byte noisePin, byte signIrq, byte noiseIrq):
     _signPin(signPin), _noisePin(noisePin), _signIrq(signIrq),
     _noiseIrq(noiseIrq)
 {
@@ -52,7 +52,7 @@ void RadiationWatch::setup()
   pinMode(_noisePin, INPUT);
   digitalWrite(_noisePin, HIGH);
   // Initialize cpmHistory[].
-  for(int i = 0; i < kHistoryCount; i++)
+  for(int i = 0; i < HISTORY_LENGTH; i++)
     _cpmHistory[i] = 0;
   // Init measurement time.
   previousTime = millis();
@@ -78,7 +78,7 @@ void RadiationWatch::loop()
       if(totalTimeSec % HISTORY_UNIT == 0 && cpmIndexPrev != totalTimeSec) {
         cpmIndexPrev = totalTimeSec;
         cpmIndex++;
-        if(cpmIndex >= kHistoryCount)
+        if(cpmIndex >= HISTORY_LENGTH)
           cpmIndex = 0;
         if(_cpm > 0 && _cpmHistory[cpmIndex] > 0) {
           _cpm -= _cpmHistory[cpmIndex];
@@ -95,7 +95,6 @@ void RadiationWatch::loop()
       _cpm += radiationCount;
       // Get the elapsed time.
       totalTime += abs(currentTime - previousTime);
-      // TODO Maybe move? (reset even if there is noise)
       loopElasped = 0;
     }
     // Initialization for next N loops.
@@ -134,9 +133,9 @@ char* RadiationWatch::csvKeys()
 char* RadiationWatch::csvStatus()
 {
   // Format message. We use dtostrf() to format float to string.
-  char cpmBuff[10];
-  char uSvBuff[10];
-  char uSvdBuff[10];
+  char cpmBuff[8];
+  char uSvBuff[8];
+  char uSvdBuff[8];
   dtostrf(cpm(), -1, 3, cpmBuff);
   dtostrf(uSvh(), -1, 3, uSvBuff);
   dtostrf(uSvhError(), -1, 3, uSvdBuff);
@@ -154,7 +153,6 @@ float RadiationWatch::cpm()
 {
   // cpm = uSv x alpha
   float min = cpmTime();
-  Serial.println(min);
   return (min > 0) ? _cpm / min : 0;
 }
 

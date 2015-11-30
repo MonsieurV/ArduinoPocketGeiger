@@ -20,7 +20,7 @@
 class RadiationWatch
 {
   public:
-    RadiationWatch(int signPin, int noisePin, int signIrq, int noiseIrq);
+    RadiationWatch(byte signPin, byte noisePin, byte signIrq, byte noiseIrq);
 
     void setup();
     void loop();
@@ -49,19 +49,18 @@ class RadiationWatch
     char* csvStatus();
 
   protected:
-    static const unsigned int kHistoryCount = HISTORY_LENGTH;
     // Process the max CPM time (in milliseconds) from the kHistoryCount:
     // maxCpmTime = kHistoryCount * HISTORY_UNIT * 1000
-    static const unsigned long maxCpmTime = kHistoryCount * HISTORY_UNIT * 1000L;
+    static const unsigned long maxCpmTime = HISTORY_LENGTH * HISTORY_UNIT * 1000L;
     // History of count rates.
     unsigned int _cpmHistory[kHistoryCount];
     unsigned long previousTime;
-    // Count rate [cpm] of current.
+    // Current count per minute (CPM).
     unsigned int _cpm;
     // Position of current count rate on cpmHistory[].
-    int cpmIndex;
+    byte cpmIndex;
     // Flag to prevent duplicative counting.
-    int cpmIndexPrev;
+    unsigned int cpmIndexPrev;
     // Elapsed time of measurement (milliseconds).
     // TODO Will overflow after days of measurement: reset after N days?
     // http://arduino103.blogspot.fr/2013/06/comment-un-reset-darduino-par-logiciel.html
@@ -72,10 +71,10 @@ class RadiationWatch
       return min(totalTime, maxCpmTime) / 1000 / 60.0;
     }
     // Pin settings.
-    int _signPin;
-    int _noisePin;
-    int _signIrq;
-    int _noiseIrq;
+    byte _signPin;
+    byte _noisePin;
+    byte _signIrq;
+    byte _noiseIrq;
     // User callbacks.
     void (*_radiationCallback)(void);
     void (*_noiseCallback)(void);
