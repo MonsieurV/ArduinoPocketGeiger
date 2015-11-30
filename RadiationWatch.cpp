@@ -79,12 +79,8 @@ void RadiationWatch::loop()
         cpmIndex++;
         if(cpmIndex >= HISTORY_LENGTH)
           cpmIndex = 0;
-        if(_cpm > 0 && _cpmHistory[cpmIndex] > 0) {
+        if(_cpm > 0 && _cpmHistory[cpmIndex] > 0)
           _cpm -= _cpmHistory[cpmIndex];
-          Serial.println("Decrement _cpm from history");
-          Serial.println(_cpmHistory[cpmIndex]);
-          Serial.println(_cpm);
-        }
         _cpmHistory[cpmIndex] = 0;
       }
       noInterrupts();
