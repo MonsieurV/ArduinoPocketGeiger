@@ -73,8 +73,7 @@ void RadiationWatch::loop()
     unsigned long currentTime = millis();
     if(noiseCount == 0) {
       // Shift an array for counting log for each 6 seconds.
-      // TODO Will overflox after 18 hours of measurement.
-      unsigned int totalTimeSec = totalTime / 1000;
+      unsigned long totalTimeSec = totalTime / 1000;
       if(totalTimeSec % HISTORY_UNIT == 0 && cpmIndexPrev != totalTimeSec) {
         cpmIndexPrev = totalTimeSec;
         cpmIndex++;

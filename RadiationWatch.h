@@ -62,10 +62,9 @@ class RadiationWatch
     // Position of current count rate on cpmHistory[].
     byte cpmIndex;
     // Flag to prevent duplicative counting.
-    unsigned int cpmIndexPrev;
+    unsigned long cpmIndexPrev;
     // Elapsed time of measurement (milliseconds).
-    // TODO Will overflow after days of measurement: reset after N days?
-    // http://arduino103.blogspot.fr/2013/06/comment-un-reset-darduino-par-logiciel.html
+    // Will overflow after days 49 of measurement.
     unsigned long totalTime;
     // Elapsed time of measurement used for CPM calculation (in minutes).
     inline float cpmTime()
