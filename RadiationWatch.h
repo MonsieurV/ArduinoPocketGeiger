@@ -13,6 +13,7 @@
 #ifndef RadiationWatch_h
 #define RadiationWatch_h
 #define HISTORY_LENGTH 200
+#define HISTORY_UNIT 6
 #define PROCESS_PERIOD 160
 #include "Arduino.h"
 
@@ -27,13 +28,13 @@ class RadiationWatch
     // Return the duration of the measurement (ms).
     unsigned long duration();
     // Return the number of radiation count by minute.
-    double cpm();
+    float cpm();
     // Return the radiation dose, exprimed in Sievert (uSv/h).
-    double uSvh();
+    float uSvh();
     /* Return the error of the measurement (uSv/h).
      * The range of precision of the measurement is:
      * [ uSvh-uSvhError, uSvh+uSvhError ]. */
-    double uSvhError();
+    float uSvhError();
 
     /* Register a function that will be called when a radiation pulse
      * is detected. */
@@ -49,24 +50,26 @@ class RadiationWatch
 
   protected:
     static const unsigned int kHistoryCount = HISTORY_LENGTH;
-    // TODO Process the max CPM time from the kHistoryCount:
-    // kHistoryCount * 6 / 60 * 60 * 1000 (currently 20 minutes)
-    static const unsigned long maxCpmTime = kHistoryCount * 6 * 20 * 1000L;
+    // Process the max CPM time (in milliseconds) from the kHistoryCount:
+    // maxCpmTime = kHistoryCount * HISTORY_UNIT * 1000
+    static const unsigned long maxCpmTime = kHistoryCount * HISTORY_UNIT * 1000L;
     // History of count rates.
-    double _cpmHistory[kHistoryCount];
+    unsigned int _cpmHistory[kHistoryCount];
     unsigned long previousTime;
     // Count rate [cpm] of current.
-    double _cpm;
+    unsigned int _cpm;
     // Position of current count rate on cpmHistory[].
     int cpmIndex;
     // Flag to prevent duplicative counting.
     int cpmIndexPrev;
     // Elapsed time of measurement (milliseconds).
+    // TODO Will overflow after days of measurement: reset after N days?
+    // http://arduino103.blogspot.fr/2013/06/comment-un-reset-darduino-par-logiciel.html
     unsigned long totalTime;
     // Elapsed time of measurement used for CPM calculation (in minutes).
-    inline double cpmTime()
+    inline float cpmTime()
     {
-      return ((long) min(totalTime, maxCpmTime) / 1000) / 60.0;
+      return min(totalTime, maxCpmTime) / 1000 / 60.0;
     }
     // Pin settings.
     int _signPin;
