@@ -12,7 +12,9 @@
  */
 #ifndef RadiationWatch_h
 #define RadiationWatch_h
+// Number of cells of the history array.
 #define HISTORY_LENGTH 200
+// Duration of each history array cell (seconds).
 #define HISTORY_UNIT 6
 #define PROCESS_PERIOD 160
 #include "Arduino.h"
@@ -49,11 +51,11 @@ class RadiationWatch
     char* csvStatus();
 
   protected:
-    // Process the max CPM time (in milliseconds) from the kHistoryCount:
-    // maxCpmTime = kHistoryCount * HISTORY_UNIT * 1000
+    // Process the max CPM time (in milliseconds) from the HISTORY_LENGTH:
+    // maxCpmTime = HISTORY_LENGTH * HISTORY_UNIT * 1000
     static const unsigned long maxCpmTime = HISTORY_LENGTH * HISTORY_UNIT * 1000L;
     // History of count rates.
-    unsigned int _cpmHistory[kHistoryCount];
+    unsigned int _cpmHistory[HISTORY_LENGTH];
     unsigned long previousTime;
     // Current count per minute (CPM).
     unsigned int _cpm;
