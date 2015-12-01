@@ -1,5 +1,5 @@
  // You can change here the history length to reduce the memory footprint.
-#define HISTORY_LENGTH 150
+#define HISTORY_LENGTH 200
 #include "RadiationWatch.h"
 #include <SD.h>
 #include <SPI.h>
