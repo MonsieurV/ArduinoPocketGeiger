@@ -7,7 +7,7 @@ You need a piezo buzzer or similar connected to pin 8.
 */
 
 const int PIN_TONE = 8;
-RadiationWatch radiationWatch(2, 3, 0, 1);
+RadiationWatch radiationWatch;
 
 void onRadiation()
 {

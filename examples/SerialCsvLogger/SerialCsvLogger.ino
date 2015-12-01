@@ -1,6 +1,12 @@
 #include "RadiationWatch.h"
+/*
+Output the measurements on serial as CSV values.
 
-RadiationWatch radiationWatch(2, 3, 0, 1);
+You can use the joined Python script serial_plot.py to plot dynamically
+the radiation level.
+*/
+
+RadiationWatch radiationWatch;
 
 void onRadiationPulse() {
   // For each radiation update the values sent to serial in CSV.

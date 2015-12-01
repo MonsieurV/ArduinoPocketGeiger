@@ -1,6 +1,11 @@
 #include "RadiationWatch.h"
+/*
+This simple example tell you on serial each time a gamma radiation hits the
+Pocket Geiger and print the current micro Sievert dose. It also notify you of
+the presence of vibration that prevent proper measurements.
+*/
 
-RadiationWatch radiationWatch(2, 3, 0, 1);
+RadiationWatch radiationWatch;
 
 void onRadiation()
 {

@@ -63,11 +63,7 @@ You'll need the [Arduino Etherned shield](https://www.arduino.cc/en/Main/Arduino
 
 Load the `RadiationWatch` -> `SdCardCsvLogger` sketch to your Arduino. The radiation measurements will be stored in a `rad.csv` file on the microSD card, so you can then retrieve and process them later.
 
-This sketch do not run properly on the Arduino Uno or other ATmega328-based chips, as it requires more than 2k of [SRAM memory](https://www.arduino.cc/en/Tutorial/Memory).
-
-## Notes
-
-* Remember the Pocket Geiger can't record correctly in presence of movement, so keep the whole stationary during the measurements.
+Remember however the Pocket Geiger can't record correctly in presence of vibration, so keep the whole stationary during the measurements. You can't use it as a mobile unit of measurement. For that purpose you may look at the [bGeigie Nano](http://blog.safecast.org/bgeigie-nano/) from the Safecast project.
 
 -----------------------
 

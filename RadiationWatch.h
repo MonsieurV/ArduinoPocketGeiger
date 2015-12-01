@@ -12,8 +12,12 @@
  */
 #ifndef RadiationWatch_h
 #define RadiationWatch_h
-// Number of cells of the history array.
+/* Number of cells of the history array. If you do not have
+ * memory issues, it is adviced to keep the default value (200), for an
+ * history duration of 20 minutes (200 * 6 seconds). */
+#ifndef HISTORY_LENGTH
 #define HISTORY_LENGTH 200
+#endif
 // Duration of each history array cell (seconds).
 #define HISTORY_UNIT 6
 #define PROCESS_PERIOD 160
@@ -22,7 +26,12 @@
 class RadiationWatch
 {
   public:
-    RadiationWatch(byte signPin, byte noisePin, byte signIrq, byte noiseIrq);
+    /* signPin: Number of the pin to which is connected the signal wire.
+     * noisePin: Number of the pin ot which is connected the noise wire.
+     * signIrq: Number of the IRQ corresponding to the sign pin.
+     * noiseIrq: Number of the IRQ corresponding to the noise pin. */
+    RadiationWatch(byte signPin = 2, byte noisePin = 3, byte signIrq = 0,
+      byte noiseIrq = 1);
 
     void setup();
     void loop();

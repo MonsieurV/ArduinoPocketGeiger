@@ -1,8 +1,13 @@
+ // You can change here the history length to reduce the memory footprint.
+#define HISTORY_LENGTH 150
 #include "RadiationWatch.h"
 #include <SD.h>
 #include <SPI.h>
+/*
+Same as SerialCsvLogger, but store the CSV values to an SD card.
+*/
 
-RadiationWatch radiationWatch(2, 3, 0, 1);
+RadiationWatch radiationWatch;
 const byte sdCardPin = 4;
 File dataFile;
 
