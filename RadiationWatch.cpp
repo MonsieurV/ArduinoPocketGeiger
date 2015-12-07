@@ -4,6 +4,8 @@
  * Documentation and usage at:
  * https://github.com/MonsieurV/RadiationWatch
  *
+ * Released under MIT License. See LICENSE file.
+ *
  * Contributed by:
  * Radiation Watch <http://www.radiation-watch.org/>
  * thomasaw <https://github.com/thomasaw>
