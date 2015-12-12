@@ -1,18 +1,18 @@
-# Arduino Radiation Watch library
+# Arduino Pocket Geiger library
 
 An Arduino library to interface with the [Radiation Watch Pocket Geiger counter](http://www.radiation-watch.co.uk/) (Type 5).
 
 ![](/misc/type5.jpg?raw=true "Radiation Watch Type 5 Pocket Geiger counter")
 
-The library monitors the Pocket Geiger through interrupts, processes the hourly [Sievert dose](https://en.wikipedia.org/wiki/Sievert) and allows to get back the data using a simple interface. It comes with examples to print data to Serial, log it on a SD card or through internet, giving you some ideas of what to do with it.
+The library monitors the Pocket Geiger through interrupts, processes the hourly [Sievert dose](https://en.wikipedia.org/wiki/Sievert) and allows to get back the data using a simple interface. It comes with examples to print data to Serial or log it on a SD card, giving you some ideas of what to do with it.
 
-[Learn more](http://www.radiation-watch.co.uk/faqs) about the Radiation Watch Pocket Geiger counter. Actually it is not a proper Geiger-Müller counter, but it nevertheless effectively counts Gamma radiation.
+Learn more about the Pocket Geiger counter on the Radiation Watch [FAQ](http://www.radiation-watch.co.uk/faqs) or on [our blog](https://blog.ytotech.com/2015/12/06/radiation-watch-arduino/). Actually it is not a proper Geiger-Müller counter, but a Photodiode PIN sensor that can nevertheless effectively counts Gamma radiation.
 
 ## Getting started
 
 ### Install the library
 
-Download [the library as a zip](https://github.com/MonsieurV/RadiationWatch/archive/master.zip), extract it and put it in your Arduino `libraries` folder. (see [instructions](https://www.arduino.cc/en/Guide/Libraries))
+Download [the library as a zip](https://github.com/MonsieurV/ArduinoPocketGeiger/archive/master.zip), extract it and put it in your Arduino `libraries` folder. (see [instructions](https://www.arduino.cc/en/Guide/Libraries))
 
 ### Wire your Pocket Geiger board to your Arduino
 
@@ -63,7 +63,7 @@ You'll need the [Arduino Ethernet shield](https://www.arduino.cc/en/Main/Arduino
 
 Load the `RadiationWatch` -> `SdCardCsvLogger` sketch to your Arduino. The radiation measurements will be stored in a `rad.csv` file on the microSD card, so you can then retrieve and process them later.
 
-Remember however the Pocket Geiger can't record correctly in presence of vibration, so keep the whole stationary during the measurements. You can't use it as a mobile unit of measurement. For that purpose you may look at the [bGeigie Nano](http://blog.safecast.org/bgeigie-nano/) from the Safecast project.
+Remember however the Pocket Geiger can't record correctly in presence of vibration, so try to keep the whole stationary during the measurements. For an advanced mobile unit of measurement you may look at the [bGeigie Nano](http://blog.safecast.org/bgeigie-nano/) from the Safecast project.
 
 -----------------------
 
@@ -79,4 +79,4 @@ Created upon the [thomasaw](https://github.com/thomasaw/RadiationWatch) and [Tou
 
 ### Contribute
 
-Feel free to [open a new ticket](https://github.com/MonsieurV/RadiationWatch/issues/new) or submit a PR to improve the lib.
+Feel free to [open a new ticket](https://github.com/MonsieurV/ArduinoPocketGeiger/issues/new) or submit a PR to improve the lib.
