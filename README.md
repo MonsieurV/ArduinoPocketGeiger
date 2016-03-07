@@ -1,6 +1,6 @@
 # Arduino Pocket Geiger library
 
-An Arduino library to interface with the [Radiation Watch Pocket Geiger counter](http://www.radiation-watch.co.uk/) (Type 5).
+An Arduino library to interface with the [Radiation Watch Pocket Geiger counter](http://www.radiation-watch.org/) (Type 5).
 
 ![](/misc/type5.jpg?raw=true "Radiation Watch Type 5 Pocket Geiger counter")
 
@@ -68,6 +68,8 @@ Remember however the Pocket Geiger can't record correctly in presence of vibrati
 -----------------------
 
 Find this cool? Check out [our blog](http://blog.ytotech.com) or [send us a note](mailto:yoan@ytotech.com).
+
+This lib was [featured on the Radiation Watch website](http://www.radiation-watch.org/2015/12/type5arduino-new-and-open-sourced.html).
 
 If you search a building idea, the [Playspoon fully integrated LCD Geiger counter](http://www.playspoon.com/wiki/index.php/GeigerCounter) may inspire you.
 
