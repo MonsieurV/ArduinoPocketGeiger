@@ -67,6 +67,14 @@ Remember however the Pocket Geiger can't record correctly in presence of vibrati
 
 -----------------------
 
+## Misc.
+
+### Compile on non-AVR architectures
+
+* For Arduino Zero you may need to edit your `avr/dtostrf.c` library file. See [#2](https://github.com/MonsieurV/ArduinoPocketGeiger/issues/2).
+
+-----------------------
+
 Find this cool? Check out [our blog](http://blog.ytotech.com) or [send us a note](mailto:yoan@ytotech.com).
 
 This lib was [featured on the Radiation Watch website](http://www.radiation-watch.org/2015/12/type5arduino-new-and-open-sourced.html).
