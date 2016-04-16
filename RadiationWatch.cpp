@@ -13,6 +13,9 @@
  * Yoan Tournade <yoan@ytotech.com>
  */
 #include "RadiationWatch.h"
+#ifndef ARDUINO_ARCH_AVR
+#include <avr/dtostrf.h>
+#endif
 
 byte volatile radiationCount = 0;
 int volatile noiseCount = 0;
@@ -49,10 +52,8 @@ RadiationWatch::RadiationWatch(
 
 void RadiationWatch::setup()
 {
-  pinMode(_signPin, INPUT);
-  digitalWrite(_signPin, HIGH);
-  pinMode(_noisePin, INPUT);
-  digitalWrite(_noisePin, HIGH);
+  pinMode(_signPin, INPUT_PULLUP);
+  pinMode(_noisePin, INPUT_PULLUP);
   // Initialize cpmHistory[].
   for(int i = 0; i < HISTORY_LENGTH; i++)
     _cpmHistory[i] = 0;
