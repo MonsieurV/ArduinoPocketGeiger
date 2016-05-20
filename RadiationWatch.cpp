@@ -17,7 +17,7 @@
 #include <avr/dtostrf.h>
 #endif
 
-byte volatile radiationCount = 0;
+int volatile radiationCount = 0;
 int volatile noiseCount = 0;
 bool volatile radiationFlag = false;
 bool volatile noiseFlag = false;
@@ -60,7 +60,7 @@ void RadiationWatch::setup()
   // Init measurement time.
   previousTime = millis();
   // Attach interrupt handlers.
-  attachInterrupt(_signIrq, _onRadiationHandler, RISING);
+  attachInterrupt(_signIrq, _onRadiationHandler, FALLING);
   attachInterrupt(_noiseIrq, _onNoiseHandler, RISING);
 }
 
@@ -145,6 +145,10 @@ char* RadiationWatch::csvStatus()
 unsigned long RadiationWatch::duration()
 {
   return totalTime;
+}
+
+int RadiationWatch::currentRadiationCount() {
+  return radiationCount;
 }
 
 float RadiationWatch::cpm()
