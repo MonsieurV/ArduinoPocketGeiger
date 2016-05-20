@@ -36,10 +36,8 @@ void _onNoiseHandler()
   noiseFlag = true;
 }
 
-RadiationWatch::RadiationWatch(
-  byte signPin, byte noisePin, byte signIrq, byte noiseIrq):
-    _signPin(signPin), _noisePin(noisePin), _signIrq(signIrq),
-    _noiseIrq(noiseIrq)
+RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
+    _signPin(signPin), _noisePin(noisePin)
 {
   previousTime = 0;
   _cpm = 0;
@@ -60,8 +58,8 @@ void RadiationWatch::setup()
   // Init measurement time.
   previousTime = millis();
   // Attach interrupt handlers.
-  attachInterrupt(_signIrq, _onRadiationHandler, FALLING);
-  attachInterrupt(_noiseIrq, _onNoiseHandler, RISING);
+  attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
+  attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, RISING);
 }
 
 unsigned long loopTime = 0;

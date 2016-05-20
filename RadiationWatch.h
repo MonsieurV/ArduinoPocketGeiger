@@ -29,11 +29,8 @@ class RadiationWatch
 {
   public:
     /* signPin: Number of the pin to which is connected the signal wire.
-     * noisePin: Number of the pin ot which is connected the noise wire.
-     * signIrq: Number of the IRQ corresponding to the sign pin.
-     * noiseIrq: Number of the IRQ corresponding to the noise pin. */
-    RadiationWatch(byte signPin = 2, byte noisePin = 3, byte signIrq = 0,
-      byte noiseIrq = 1);
+     * noisePin: Number of the pin ot which is connected the noise wire. */
+    RadiationWatch(byte signPin = 2, byte noisePin = 3);
 
     void setup();
     void loop();
@@ -88,8 +85,6 @@ class RadiationWatch
     // Pin settings.
     byte _signPin;
     byte _noisePin;
-    byte _signIrq;
-    byte _noiseIrq;
     // User callbacks.
     void (*_radiationCallback)(void);
     void (*_noiseCallback)(void);

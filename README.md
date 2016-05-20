@@ -34,7 +34,7 @@ You can change the pins used by the library at its initialization. Remember to u
 signPin is the radiation pulse pin, which must match the signIrq number.
 noisePin is the noise pulse pin, which must match the noiseIrq number.
 */
-RadiationWatch radiationWatch(signPin, noisePin, signIrq, noiseIrq);
+RadiationWatch radiationWatch(signPin, noisePin);
 ```
 
 [Pocket Geiger Type 5 interface specification](http://www.radiation-watch.co.uk/uploads/5t.pdf).
