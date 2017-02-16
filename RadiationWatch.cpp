@@ -75,8 +75,7 @@ void RadiationWatch::loop()
       if(currentTime - previousHistoryTime >= HISTORY_UNIT * 1000) {
         previousHistoryTime += (unsigned long)(HISTORY_UNIT * 1000);
         cpmIndex = (cpmIndex + 1) % HISTORY_LENGTH;
-        if(_cpm > 0 && _cpmHistory[cpmIndex] > 0)
-          _cpm -= _cpmHistory[cpmIndex];
+        _cpm -= _cpmHistory[cpmIndex];
         _cpmHistory[cpmIndex] = 0;
       }
       // Store count log.
