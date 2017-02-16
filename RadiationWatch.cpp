@@ -72,7 +72,13 @@ void RadiationWatch::loop()
   loopElasped = loopElasped + abs(currentTime - loopTime);
   loopTime = currentTime;
   if(loopElasped > PROCESS_PERIOD) {
-    if(noiseCount == 0) {
+    noInterrupts();
+    int currentCount = radiationCount;
+    int currentNoiseCount = noiseCount;
+    radiationCount = 0;
+    noiseCount = 0;
+    interrupts();
+    if(currentNoiseCount == 0) {
       // Shift an array for counting log for each 6 seconds.
       unsigned long totalTimeSec = totalTime / 1000;
       if(totalTimeSec % HISTORY_UNIT == 0 && cpmIndexPrev != totalTimeSec) {
@@ -84,20 +90,16 @@ void RadiationWatch::loop()
           _cpm -= _cpmHistory[cpmIndex];
         _cpmHistory[cpmIndex] = 0;
       }
-      noInterrupts();
       // Store count log.
-      _cpmHistory[cpmIndex] += radiationCount;
+      _cpmHistory[cpmIndex] += currentCount;
       // Add number of counts.
-      _cpm += radiationCount;
+      _cpm += currentCount;
       // Get the elapsed time.
       totalTime += abs(currentTime - previousTime);
       loopElasped = 0;
     }
     // Initialization for next N loops.
     previousTime = currentTime;
-    radiationCount = 0;
-    noiseCount = 0;
-    interrupts();
     // Enable the callbacks.
     if(_radiationCallback && radiationFlag) {
       radiationFlag = false;
@@ -136,7 +138,7 @@ char* RadiationWatch::csvStatus()
   dtostrf(uSvh(), -1, 3, uSvBuff);
   dtostrf(uSvhError(), -1, 3, uSvdBuff);
   sprintf(_msg, "%lu,%d,%s,%s,%s",
-    totalTime, radiationCount, cpmBuff, uSvBuff, uSvdBuff);
+    totalTime, currentRadiationCount(), cpmBuff, uSvBuff, uSvdBuff);
   return _msg;
 }
 
@@ -146,7 +148,10 @@ unsigned long RadiationWatch::duration()
 }
 
 int RadiationWatch::currentRadiationCount() {
-  return radiationCount;
+  noInterrupts();
+  int currentCount = radiationCount;
+  interrupts();
+  return currentCount;
 }
 
 float RadiationWatch::cpm()
