@@ -36,9 +36,9 @@ RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
     _signPin(signPin), _noisePin(noisePin)
 {
   previousTime = 0;
+  previousHistoryTime = 0;
   _cpm = 0;
   cpmIndex = 0;
-  cpmIndexPrev = 0;
   totalTime = 0;
   _radiationCallback = NULL;
   _noiseCallback = NULL;
@@ -53,6 +53,7 @@ void RadiationWatch::setup()
     _cpmHistory[i] = 0;
   // Init measurement time.
   previousTime = millis();
+  previousHistoryTime = millis();
   // Attach interrupt handlers.
   attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
   attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, RISING);
@@ -71,12 +72,9 @@ void RadiationWatch::loop()
     interrupts();
     if(currentNoiseCount == 0) {
       // Shift an array for counting log for each 6 seconds.
-      unsigned long totalTimeSec = totalTime / 1000;
-      if(totalTimeSec % HISTORY_UNIT == 0 && cpmIndexPrev != totalTimeSec) {
-        cpmIndexPrev = totalTimeSec;
-        cpmIndex++;
-        if(cpmIndex >= HISTORY_LENGTH)
-          cpmIndex = 0;
+      if(currentTime - previousHistoryTime >= HISTORY_UNIT * 1000) {
+        previousHistoryTime += (unsigned long)(HISTORY_UNIT * 1000);
+        cpmIndex = (cpmIndex + 1) % HISTORY_LENGTH;
         if(_cpm > 0 && _cpmHistory[cpmIndex] > 0)
           _cpm -= _cpmHistory[cpmIndex];
         _cpmHistory[cpmIndex] = 0;
