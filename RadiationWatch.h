@@ -70,7 +70,7 @@ class RadiationWatch
     unsigned long previousTime;
     unsigned long previousHistoryTime;
     // Current count per minute (CPM).
-    unsigned int _cpm;
+    unsigned long _cpm;
     // Position of current count rate on cpmHistory[].
     byte cpmIndex;
     // Elapsed time of measurement (milliseconds).
