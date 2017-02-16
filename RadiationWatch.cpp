@@ -19,21 +19,17 @@
 
 int volatile radiationCount = 0;
 int volatile noiseCount = 0;
-bool volatile radiationFlag = false;
-bool volatile noiseFlag = false;
 // Message buffer for output.
 char _msg[60];
 
 void _onRadiationHandler()
 {
   radiationCount++;
-  radiationFlag = true;
 }
 
 void _onNoiseHandler()
 {
   noiseCount++;
-  noiseFlag = true;
 }
 
 RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
@@ -101,13 +97,11 @@ void RadiationWatch::loop()
     // Initialization for next N loops.
     previousTime = currentTime;
     // Enable the callbacks.
-    if(_radiationCallback && radiationFlag) {
-      radiationFlag = false;
-      _radiationCallback();
-    }
-    if(_noiseCallback && noiseFlag) {
-      noiseFlag = false;
+    if(_noiseCallback && currentNoiseCount > 0) {
       _noiseCallback();
+    }
+    if(_radiationCallback && currentCount > 0) {
+      _radiationCallback();
     }
   }
 }
