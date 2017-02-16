@@ -58,16 +58,11 @@ void RadiationWatch::setup()
   attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, RISING);
 }
 
-unsigned long loopTime = 0;
-unsigned int loopElasped = 0;
-
 void RadiationWatch::loop()
 {
   // Process radiation dose if the process period has elapsed.
   unsigned long currentTime = millis();
-  loopElasped = loopElasped + abs(currentTime - loopTime);
-  loopTime = currentTime;
-  if(loopElasped > PROCESS_PERIOD) {
+  if(currentTime - previousTime >= PROCESS_PERIOD) {
     noInterrupts();
     int currentCount = radiationCount;
     int currentNoiseCount = noiseCount;
@@ -91,10 +86,9 @@ void RadiationWatch::loop()
       // Add number of counts.
       _cpm += currentCount;
       // Get the elapsed time.
-      totalTime += abs(currentTime - previousTime);
-      loopElasped = 0;
+      totalTime += (currentTime - previousTime);
     }
-    // Initialization for next N loops.
+    // Save time of current process period
     previousTime = currentTime;
     // Enable the callbacks.
     if(_noiseCallback && currentNoiseCount > 0) {
