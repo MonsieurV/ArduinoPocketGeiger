@@ -13,7 +13,7 @@
  * Yoan Tournade <yoan@ytotech.com>
  */
 #include "RadiationWatch.h"
-#ifndef ARDUINO_ARCH_AVR
+#if !defined(ARDUINO_ARCH_AVR) && !defined(ESP8266)
 #include <avr/dtostrf.h>
 #endif
 
