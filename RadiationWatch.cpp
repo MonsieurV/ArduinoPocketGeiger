@@ -68,10 +68,10 @@ unsigned int loopElasped = 0;
 void RadiationWatch::loop()
 {
   // Process radiation dose if the process period has elapsed.
-  loopElasped = loopElasped + abs(millis() - loopTime);
-  loopTime = millis();
+  unsigned long currentTime = millis();
+  loopElasped = loopElasped + abs(currentTime - loopTime);
+  loopTime = currentTime;
   if(loopElasped > PROCESS_PERIOD) {
-    unsigned long currentTime = millis();
     if(noiseCount == 0) {
       // Shift an array for counting log for each 6 seconds.
       unsigned long totalTimeSec = totalTime / 1000;
