@@ -58,7 +58,7 @@ void RadiationWatch::setup()
   csvStartTime = millis();
   // Attach interrupt handlers.
   attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
-  attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, RISING);
+  attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, FALLING);
 }
 
 void RadiationWatch::loop()
