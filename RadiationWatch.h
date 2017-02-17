@@ -43,6 +43,9 @@ class RadiationWatch
     /* Return the current radiation count, that is the number of Gamma ray
      * since the last call to loop(), which reset the current count to 0. */
     int currentRadiationCount();
+    /* Return the radiation count, that is the number of Gamma ray occured
+     * during the integration time. */
+    unsigned long radiationCount();
     // Return the number of radiation count by minute.
     float cpm();
     // Return the radiation dose, exprimed in Sievert (uSv/h).
