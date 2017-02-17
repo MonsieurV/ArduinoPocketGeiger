@@ -35,6 +35,9 @@ class RadiationWatch
     void setup();
     void loop();
 
+    /* Integration time of traced radiation count (in milliseconds),
+     * grows gradually to HISTORY_LENGTH * HISTORY_UNIT * 1000. */
+    unsigned long integrationTime();
     // Return the duration of the measurement (ms).
     unsigned long duration();
     /* Return the current radiation count, that is the number of Gamma ray
@@ -74,12 +77,6 @@ class RadiationWatch
     byte historyLength;
     // Start time of measurement (milliseconds) used for CSV.
     unsigned long csvStartTime;
-    // Elapsed time of measurement used for CPM calculation (in minutes).
-    inline float cpmTime()
-    {
-      return (historyLength * HISTORY_UNIT
-              + (previousTime - previousHistoryTime) / 1000.0) / 60.0;
-    }
     // Pin settings.
     byte _signPin;
     byte _noisePin;

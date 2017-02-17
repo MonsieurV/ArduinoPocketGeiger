@@ -132,6 +132,12 @@ char* RadiationWatch::csvStatus()
   return _msg;
 }
 
+unsigned long RadiationWatch::integrationTime()
+{
+  return (historyLength * HISTORY_UNIT * 1000
+          + previousTime - previousHistoryTime);
+}
+
 unsigned long RadiationWatch::duration()
 {
   // Elapsed time of measurement (milliseconds).
@@ -149,7 +155,7 @@ int RadiationWatch::currentRadiationCount() {
 float RadiationWatch::cpm()
 {
   // cpm = uSv x alpha
-  float min = cpmTime();
+  float min = integrationTime() / 60000.0;
   return (min > 0) ? _count / min : 0;
 }
 
@@ -162,6 +168,6 @@ float RadiationWatch::uSvh()
 
 float RadiationWatch::uSvhError()
 {
-  float min = cpmTime();
+  float min = integrationTime() / 60000.0;
   return (min > 0) ? sqrt(_count) / min / kAlpha : 0;
 }
