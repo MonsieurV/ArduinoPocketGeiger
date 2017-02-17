@@ -86,14 +86,5 @@ class RadiationWatch
     // User callbacks.
     void (*_radiationCallback)(void);
     void (*_noiseCallback)(void);
-
-  public:
-    /* Functions called by hardware external interrupts.
-     * We put them here, as public members, in order to call them through
-     * the Interrupt Service Routines (ISR), which can not be class members.
-     * <!> Do NOT call them or the results will be fasified. <!>
-     */
-    void _onRadiation();
-    void _onNoise();
 };
 #endif
