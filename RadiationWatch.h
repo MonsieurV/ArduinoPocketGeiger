@@ -63,13 +63,13 @@ class RadiationWatch
 
   protected:
     // History of count rates.
-    unsigned int _cpmHistory[HISTORY_LENGTH];
+    unsigned int _countHistory[HISTORY_LENGTH];
     unsigned long previousTime;
     unsigned long previousHistoryTime;
-    // Current count per minute (CPM).
-    unsigned long _cpm;
-    // Position of current count rate on cpmHistory[].
-    byte cpmIndex;
+    // Current count (sum of count in _countHistory).
+    unsigned long _count;
+    // Position of current count rate on _countHistory[].
+    byte historyIndex;
     // Current length of count history
     byte historyLength;
     // Start time of measurement (milliseconds) used for CSV.

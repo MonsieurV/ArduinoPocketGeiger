@@ -17,19 +17,19 @@
 #include <avr/dtostrf.h>
 #endif
 
-int volatile radiationCount = 0;
-int volatile noiseCount = 0;
+int volatile _radiationCount = 0;
+int volatile _noiseCount = 0;
 // Message buffer for output.
 char _msg[60];
 
 void _onRadiationHandler()
 {
-  radiationCount++;
+  _radiationCount++;
 }
 
 void _onNoiseHandler()
 {
-  noiseCount++;
+  _noiseCount++;
 }
 
 RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
@@ -38,8 +38,8 @@ RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
   previousTime = 0;
   previousHistoryTime = 0;
   csvStartTime = 0;
-  _cpm = 0;
-  cpmIndex = 0;
+  _count = 0;
+  historyIndex = 0;
   historyLength = 0;
   _radiationCallback = NULL;
   _noiseCallback = NULL;
@@ -49,9 +49,9 @@ void RadiationWatch::setup()
 {
   pinMode(_signPin, INPUT_PULLUP);
   pinMode(_noisePin, INPUT_PULLUP);
-  // Initialize cpmHistory[].
+  // Initialize _countHistory[].
   for(int i = 0; i < HISTORY_LENGTH; i++)
-    _cpmHistory[i] = 0;
+    _countHistory[i] = 0;
   // Init measurement time.
   previousTime = millis();
   previousHistoryTime = millis();
@@ -67,28 +67,28 @@ void RadiationWatch::loop()
   unsigned long currentTime = millis();
   if(currentTime - previousTime >= PROCESS_PERIOD) {
     noInterrupts();
-    int currentCount = radiationCount;
-    int currentNoiseCount = noiseCount;
-    radiationCount = 0;
-    noiseCount = 0;
+    int currentCount = _radiationCount;
+    int currentNoiseCount = _noiseCount;
+    _radiationCount = 0;
+    _noiseCount = 0;
     interrupts();
     if(currentNoiseCount == 0) {
       // Store count log.
-      _cpmHistory[cpmIndex] += currentCount;
+      _countHistory[historyIndex] += currentCount;
       // Add number of counts.
-      _cpm += currentCount;
+      _count += currentCount;
     }
     // Shift an array for counting log for each 6 seconds.
     if(currentTime - previousHistoryTime >= HISTORY_UNIT * 1000) {
       previousHistoryTime += (unsigned long)(HISTORY_UNIT * 1000);
-      cpmIndex = (cpmIndex + 1) % HISTORY_LENGTH;
+      historyIndex = (historyIndex + 1) % HISTORY_LENGTH;
       if(historyLength < (HISTORY_LENGTH-1)) {
         // Since, we overwrite the oldest value in the history,
         // the effective maximum length is HISTORY_LENGTH-1
         historyLength++;
       }
-      _cpm -= _cpmHistory[cpmIndex];
-      _cpmHistory[cpmIndex] = 0;
+      _count -= _countHistory[historyIndex];
+      _countHistory[historyIndex] = 0;
     }
     // Save time of current process period
     previousTime = currentTime;
@@ -141,7 +141,7 @@ unsigned long RadiationWatch::duration()
 
 int RadiationWatch::currentRadiationCount() {
   noInterrupts();
-  int currentCount = radiationCount;
+  int currentCount = _radiationCount;
   interrupts();
   return currentCount;
 }
@@ -150,7 +150,7 @@ float RadiationWatch::cpm()
 {
   // cpm = uSv x alpha
   float min = cpmTime();
-  return (min > 0) ? _cpm / min : 0;
+  return (min > 0) ? _count / min : 0;
 }
 
 static const float kAlpha = 53.032;
@@ -163,5 +163,5 @@ float RadiationWatch::uSvh()
 float RadiationWatch::uSvhError()
 {
   float min = cpmTime();
-  return (min > 0) ? sqrt(_cpm) / min / kAlpha : 0;
+  return (min > 0) ? sqrt(_count) / min / kAlpha : 0;
 }
