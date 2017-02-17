@@ -38,8 +38,6 @@ class RadiationWatch
     /* Integration time of traced radiation count (in milliseconds),
      * grows gradually to HISTORY_LENGTH * HISTORY_UNIT * 1000. */
     unsigned long integrationTime();
-    // Return the duration of the measurement (ms).
-    unsigned long duration();
     /* Return the current radiation count, that is the number of Gamma ray
      * since the last call to loop(), which reset the current count to 0. */
     int currentRadiationCount();
@@ -64,11 +62,6 @@ class RadiationWatch
      * is detected. */
     void registerNoiseCallback(void (*callback)(void));
 
-    // Get CSV-formatted keys for the status values.
-    char* csvKeys();
-    // Get CSV-formatted current values.
-    char* csvStatus();
-
   protected:
     // History of count rates.
     unsigned int _countHistory[HISTORY_LENGTH];
@@ -80,8 +73,6 @@ class RadiationWatch
     byte historyIndex;
     // Current length of count history
     byte historyLength;
-    // Start time of measurement (milliseconds) used for CSV.
-    unsigned long csvStartTime;
     // Pin settings.
     byte _signPin;
     byte _noisePin;
