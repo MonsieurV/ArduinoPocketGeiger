@@ -39,6 +39,7 @@ RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
   previousHistoryTime = 0;
   _cpm = 0;
   cpmIndex = 0;
+  historyLength = 0;
   totalTime = 0;
   _radiationCallback = NULL;
   _noiseCallback = NULL;
@@ -80,6 +81,11 @@ void RadiationWatch::loop()
     if(currentTime - previousHistoryTime >= HISTORY_UNIT * 1000) {
       previousHistoryTime += (unsigned long)(HISTORY_UNIT * 1000);
       cpmIndex = (cpmIndex + 1) % HISTORY_LENGTH;
+      if(historyLength < (HISTORY_LENGTH-1)) {
+        // Since, we overwrite the oldest value in the history,
+        // the effective maximum length is HISTORY_LENGTH-1
+        historyLength++;
+      }
       _cpm -= _cpmHistory[cpmIndex];
       _cpmHistory[cpmIndex] = 0;
     }

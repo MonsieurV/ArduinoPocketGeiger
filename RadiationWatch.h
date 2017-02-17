@@ -62,9 +62,6 @@ class RadiationWatch
     char* csvStatus();
 
   protected:
-    // Process the max CPM time (in milliseconds) from the HISTORY_LENGTH:
-    // maxCpmTime = HISTORY_LENGTH * HISTORY_UNIT * 1000
-    static const unsigned long maxCpmTime = HISTORY_LENGTH * HISTORY_UNIT * 1000L;
     // History of count rates.
     unsigned int _cpmHistory[HISTORY_LENGTH];
     unsigned long previousTime;
@@ -73,13 +70,16 @@ class RadiationWatch
     unsigned long _cpm;
     // Position of current count rate on cpmHistory[].
     byte cpmIndex;
+    // Current length of count history
+    byte historyLength;
     // Elapsed time of measurement (milliseconds).
     // Will overflow after days 49 of measurement.
     unsigned long totalTime;
     // Elapsed time of measurement used for CPM calculation (in minutes).
     inline float cpmTime()
     {
-      return min(totalTime, maxCpmTime) / 1000 / 60.0;
+      return (historyLength * HISTORY_UNIT
+              + (previousTime - previousHistoryTime) / 1000.0) / 60.0;
     }
     // Pin settings.
     byte _signPin;
