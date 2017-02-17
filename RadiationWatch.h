@@ -72,9 +72,8 @@ class RadiationWatch
     byte cpmIndex;
     // Current length of count history
     byte historyLength;
-    // Elapsed time of measurement (milliseconds).
-    // Will overflow after days 49 of measurement.
-    unsigned long totalTime;
+    // Start time of measurement (milliseconds) used for CSV.
+    unsigned long csvStartTime;
     // Elapsed time of measurement used for CPM calculation (in minutes).
     inline float cpmTime()
     {

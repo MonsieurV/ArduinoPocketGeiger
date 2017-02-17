@@ -37,10 +37,10 @@ RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
 {
   previousTime = 0;
   previousHistoryTime = 0;
+  csvStartTime = 0;
   _cpm = 0;
   cpmIndex = 0;
   historyLength = 0;
-  totalTime = 0;
   _radiationCallback = NULL;
   _noiseCallback = NULL;
 }
@@ -55,6 +55,7 @@ void RadiationWatch::setup()
   // Init measurement time.
   previousTime = millis();
   previousHistoryTime = millis();
+  csvStartTime = millis();
   // Attach interrupt handlers.
   attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
   attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, RISING);
@@ -89,8 +90,6 @@ void RadiationWatch::loop()
       _cpm -= _cpmHistory[cpmIndex];
       _cpmHistory[cpmIndex] = 0;
     }
-    // Get the elapsed time.
-    totalTime += (currentTime - previousTime);
     // Save time of current process period
     previousTime = currentTime;
     // Enable the callbacks.
@@ -129,13 +128,15 @@ char* RadiationWatch::csvStatus()
   dtostrf(uSvh(), -1, 3, uSvBuff);
   dtostrf(uSvhError(), -1, 3, uSvdBuff);
   sprintf(_msg, "%lu,%d,%s,%s,%s",
-    totalTime, currentRadiationCount(), cpmBuff, uSvBuff, uSvdBuff);
+          duration(), currentRadiationCount(), cpmBuff, uSvBuff, uSvdBuff);
   return _msg;
 }
 
 unsigned long RadiationWatch::duration()
 {
-  return totalTime;
+  // Elapsed time of measurement (milliseconds).
+  // Will overflow after days 49 of measurement.
+  return previousTime - csvStartTime;
 }
 
 int RadiationWatch::currentRadiationCount() {
