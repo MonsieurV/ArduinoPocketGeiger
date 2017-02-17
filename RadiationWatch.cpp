@@ -71,20 +71,20 @@ void RadiationWatch::loop()
     noiseCount = 0;
     interrupts();
     if(currentNoiseCount == 0) {
-      // Shift an array for counting log for each 6 seconds.
-      if(currentTime - previousHistoryTime >= HISTORY_UNIT * 1000) {
-        previousHistoryTime += (unsigned long)(HISTORY_UNIT * 1000);
-        cpmIndex = (cpmIndex + 1) % HISTORY_LENGTH;
-        _cpm -= _cpmHistory[cpmIndex];
-        _cpmHistory[cpmIndex] = 0;
-      }
       // Store count log.
       _cpmHistory[cpmIndex] += currentCount;
       // Add number of counts.
       _cpm += currentCount;
-      // Get the elapsed time.
-      totalTime += (currentTime - previousTime);
     }
+    // Shift an array for counting log for each 6 seconds.
+    if(currentTime - previousHistoryTime >= HISTORY_UNIT * 1000) {
+      previousHistoryTime += (unsigned long)(HISTORY_UNIT * 1000);
+      cpmIndex = (cpmIndex + 1) % HISTORY_LENGTH;
+      _cpm -= _cpmHistory[cpmIndex];
+      _cpmHistory[cpmIndex] = 0;
+    }
+    // Get the elapsed time.
+    totalTime += (currentTime - previousTime);
     // Save time of current process period
     previousTime = currentTime;
     // Enable the callbacks.
