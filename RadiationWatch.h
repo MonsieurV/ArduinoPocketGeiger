@@ -47,13 +47,13 @@ class RadiationWatch
      * during the integration time. */
     unsigned long radiationCount();
     // Return the number of radiation count by minute.
-    float cpm();
+    double cpm();
     // Return the radiation dose, exprimed in Sievert (uSv/h).
-    float uSvh();
+    double uSvh();
     /* Return the error of the measurement (uSv/h).
      * The range of precision of the measurement is:
      * [ uSvh-uSvhError, uSvh+uSvhError ]. */
-    float uSvhError();
+    double uSvhError();
 
     /* Register a function that will be called when a radiation pulse
      * is detected. */

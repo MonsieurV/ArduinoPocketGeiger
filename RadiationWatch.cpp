@@ -156,22 +156,22 @@ unsigned long RadiationWatch::radiationCount() {
   return _count;
 }
 
-float RadiationWatch::cpm()
+double RadiationWatch::cpm()
 {
   // cpm = uSv x alpha
-  float min = integrationTime() / 60000.0;
+  double min = integrationTime() / 60000.0;
   return (min > 0) ? radiationCount() / min : 0;
 }
 
-static const float kAlpha = 53.032;
+static const double kAlpha = 53.032;
 
-float RadiationWatch::uSvh()
+double RadiationWatch::uSvh()
 {
   return cpm() / kAlpha;
 }
 
-float RadiationWatch::uSvhError()
+double RadiationWatch::uSvhError()
 {
-  float min = integrationTime() / 60000.0;
+  double min = integrationTime() / 60000.0;
   return (min > 0) ? sqrt(radiationCount()) / min / kAlpha : 0;
 }
