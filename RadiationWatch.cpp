@@ -17,17 +17,17 @@
 #include <avr/dtostrf.h>
 #endif
 
-int volatile _radiationCount = 0;
-int volatile _noiseCount = 0;
+int volatile RadiationWatch::_radiationCount = 0;
+int volatile RadiationWatch::_noiseCount = 0;
 // Message buffer for output.
 char _msg[60];
 
-void _onRadiationHandler()
+void RadiationWatch::_onRadiationHandler()
 {
   _radiationCount++;
 }
 
-void _onNoiseHandler()
+void RadiationWatch::_onNoiseHandler()
 {
   _noiseCount++;
 }

@@ -86,5 +86,12 @@ class RadiationWatch
     // User callbacks.
     void (*_radiationCallback)(void);
     void (*_noiseCallback)(void);
+    // radiation count used in interrupt routine
+    static int volatile _radiationCount;
+    // noise count used in interrupt routine
+    static int volatile _noiseCount;
+    // interrupt handler
+    static void _onRadiationHandler();
+    static void _onNoiseHandler();
 };
 #endif
