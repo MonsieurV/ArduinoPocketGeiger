@@ -163,8 +163,6 @@ double RadiationWatch::cpm()
   return (min > 0) ? radiationCount() / min : 0;
 }
 
-static const double kAlpha = 53.032;
-
 double RadiationWatch::uSvh()
 {
   return cpm() / kAlpha;
