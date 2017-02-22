@@ -17,33 +17,30 @@
 #include <avr/dtostrf.h>
 #endif
 
-int volatile radiationCount = 0;
-int volatile noiseCount = 0;
-bool volatile radiationFlag = false;
-bool volatile noiseFlag = false;
+int volatile _radiationCount = 0;
+int volatile _noiseCount = 0;
 // Message buffer for output.
 char _msg[60];
 
 void _onRadiationHandler()
 {
-  radiationCount++;
-  radiationFlag = true;
+  _radiationCount++;
 }
 
 void _onNoiseHandler()
 {
-  noiseCount++;
-  noiseFlag = true;
+  _noiseCount++;
 }
 
 RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
     _signPin(signPin), _noisePin(noisePin)
 {
   previousTime = 0;
-  _cpm = 0;
-  cpmIndex = 0;
-  cpmIndexPrev = 0;
-  totalTime = 0;
+  previousHistoryTime = 0;
+  csvStartTime = 0;
+  _count = 0;
+  historyIndex = 0;
+  historyLength = 0;
   _radiationCallback = NULL;
   _noiseCallback = NULL;
 }
@@ -52,60 +49,55 @@ void RadiationWatch::setup()
 {
   pinMode(_signPin, INPUT_PULLUP);
   pinMode(_noisePin, INPUT_PULLUP);
-  // Initialize cpmHistory[].
+  // Initialize _countHistory[].
   for(int i = 0; i < HISTORY_LENGTH; i++)
-    _cpmHistory[i] = 0;
+    _countHistory[i] = 0;
   // Init measurement time.
   previousTime = millis();
+  previousHistoryTime = millis();
+  csvStartTime = millis();
   // Attach interrupt handlers.
   attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
-  attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, RISING);
+  attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, FALLING);
 }
-
-unsigned long loopTime = 0;
-unsigned int loopElasped = 0;
 
 void RadiationWatch::loop()
 {
   // Process radiation dose if the process period has elapsed.
-  loopElasped = loopElasped + abs(millis() - loopTime);
-  loopTime = millis();
-  if(loopElasped > PROCESS_PERIOD) {
-    unsigned long currentTime = millis();
-    if(noiseCount == 0) {
-      // Shift an array for counting log for each 6 seconds.
-      unsigned long totalTimeSec = totalTime / 1000;
-      if(totalTimeSec % HISTORY_UNIT == 0 && cpmIndexPrev != totalTimeSec) {
-        cpmIndexPrev = totalTimeSec;
-        cpmIndex++;
-        if(cpmIndex >= HISTORY_LENGTH)
-          cpmIndex = 0;
-        if(_cpm > 0 && _cpmHistory[cpmIndex] > 0)
-          _cpm -= _cpmHistory[cpmIndex];
-        _cpmHistory[cpmIndex] = 0;
-      }
-      noInterrupts();
-      // Store count log.
-      _cpmHistory[cpmIndex] += radiationCount;
-      // Add number of counts.
-      _cpm += radiationCount;
-      // Get the elapsed time.
-      totalTime += abs(currentTime - previousTime);
-      loopElasped = 0;
-    }
-    // Initialization for next N loops.
-    previousTime = currentTime;
-    radiationCount = 0;
-    noiseCount = 0;
+  unsigned long currentTime = millis();
+  if(currentTime - previousTime >= PROCESS_PERIOD) {
+    noInterrupts();
+    int currentCount = _radiationCount;
+    int currentNoiseCount = _noiseCount;
+    _radiationCount = 0;
+    _noiseCount = 0;
     interrupts();
-    // Enable the callbacks.
-    if(_radiationCallback && radiationFlag) {
-      radiationFlag = false;
-      _radiationCallback();
+    if(currentNoiseCount == 0) {
+      // Store count log.
+      _countHistory[historyIndex] += currentCount;
+      // Add number of counts.
+      _count += currentCount;
     }
-    if(_noiseCallback && noiseFlag) {
-      noiseFlag = false;
+    // Shift an array for counting log for each 6 seconds.
+    if(currentTime - previousHistoryTime >= HISTORY_UNIT * 1000) {
+      previousHistoryTime += (unsigned long)(HISTORY_UNIT * 1000);
+      historyIndex = (historyIndex + 1) % HISTORY_LENGTH;
+      if(historyLength < (HISTORY_LENGTH-1)) {
+        // Since, we overwrite the oldest value in the history,
+        // the effective maximum length is HISTORY_LENGTH-1
+        historyLength++;
+      }
+      _count -= _countHistory[historyIndex];
+      _countHistory[historyIndex] = 0;
+    }
+    // Save time of current process period
+    previousTime = currentTime;
+    // Enable the callbacks.
+    if(_noiseCallback && currentNoiseCount > 0) {
       _noiseCallback();
+    }
+    if(_radiationCallback && currentCount > 0) {
+      _radiationCallback();
     }
   }
 }
@@ -136,24 +128,29 @@ char* RadiationWatch::csvStatus()
   dtostrf(uSvh(), -1, 3, uSvBuff);
   dtostrf(uSvhError(), -1, 3, uSvdBuff);
   sprintf(_msg, "%lu,%d,%s,%s,%s",
-    totalTime, radiationCount, cpmBuff, uSvBuff, uSvdBuff);
+          duration(), currentRadiationCount(), cpmBuff, uSvBuff, uSvdBuff);
   return _msg;
 }
 
 unsigned long RadiationWatch::duration()
 {
-  return totalTime;
+  // Elapsed time of measurement (milliseconds).
+  // Will overflow after days 49 of measurement.
+  return previousTime - csvStartTime;
 }
 
 int RadiationWatch::currentRadiationCount() {
-  return radiationCount;
+  noInterrupts();
+  int currentCount = _radiationCount;
+  interrupts();
+  return currentCount;
 }
 
 float RadiationWatch::cpm()
 {
   // cpm = uSv x alpha
   float min = cpmTime();
-  return (min > 0) ? _cpm / min : 0;
+  return (min > 0) ? _count / min : 0;
 }
 
 static const float kAlpha = 53.032;
@@ -166,5 +163,5 @@ float RadiationWatch::uSvh()
 float RadiationWatch::uSvhError()
 {
   float min = cpmTime();
-  return (min > 0) ? sqrt(_cpm) / min / kAlpha : 0;
+  return (min > 0) ? sqrt(_count) / min / kAlpha : 0;
 }

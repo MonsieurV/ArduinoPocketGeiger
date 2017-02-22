@@ -62,25 +62,23 @@ class RadiationWatch
     char* csvStatus();
 
   protected:
-    // Process the max CPM time (in milliseconds) from the HISTORY_LENGTH:
-    // maxCpmTime = HISTORY_LENGTH * HISTORY_UNIT * 1000
-    static const unsigned long maxCpmTime = HISTORY_LENGTH * HISTORY_UNIT * 1000L;
     // History of count rates.
-    unsigned int _cpmHistory[HISTORY_LENGTH];
+    unsigned int _countHistory[HISTORY_LENGTH];
     unsigned long previousTime;
-    // Current count per minute (CPM).
-    unsigned int _cpm;
-    // Position of current count rate on cpmHistory[].
-    byte cpmIndex;
-    // Flag to prevent duplicative counting.
-    unsigned long cpmIndexPrev;
-    // Elapsed time of measurement (milliseconds).
-    // Will overflow after days 49 of measurement.
-    unsigned long totalTime;
+    unsigned long previousHistoryTime;
+    // Current count (sum of count in _countHistory).
+    unsigned long _count;
+    // Position of current count rate on _countHistory[].
+    byte historyIndex;
+    // Current length of count history
+    byte historyLength;
+    // Start time of measurement (milliseconds) used for CSV.
+    unsigned long csvStartTime;
     // Elapsed time of measurement used for CPM calculation (in minutes).
     inline float cpmTime()
     {
-      return min(totalTime, maxCpmTime) / 1000 / 60.0;
+      return (historyLength * HISTORY_UNIT
+              + (previousTime - previousHistoryTime) / 1000.0) / 60.0;
     }
     // Pin settings.
     byte _signPin;
@@ -88,14 +86,5 @@ class RadiationWatch
     // User callbacks.
     void (*_radiationCallback)(void);
     void (*_noiseCallback)(void);
-
-  public:
-    /* Functions called by hardware external interrupts.
-     * We put them here, as public members, in order to call them through
-     * the Interrupt Service Routines (ISR), which can not be class members.
-     * <!> Do NOT call them or the results will be fasified. <!>
-     */
-    void _onRadiation();
-    void _onNoise();
 };
 #endif
