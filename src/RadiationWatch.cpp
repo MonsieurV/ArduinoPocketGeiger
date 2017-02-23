@@ -12,6 +12,7 @@
  * Tourmal <https://github.com/Toumal>
  * Yoan Tournade <yoan@ytotech.com>
  */
+#define LIBCALL_RADIATIONWATCH
 #include "RadiationWatch.h"
 
 int volatile RadiationWatch::_radiationCount = 0;
@@ -50,8 +51,7 @@ void RadiationWatch::setup()
   previousTime = millis();
   previousHistoryTime = millis();
   // Attach interrupt handlers.
-  attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
-  attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, FALLING);
+  setupInterrupt();
 }
 
 void RadiationWatch::loop()

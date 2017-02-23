@@ -83,6 +83,8 @@ class RadiationWatch
     // User callbacks.
     void (*_radiationCallback)(void);
     void (*_noiseCallback)(void);
+    // function to attach the interrupt handler
+    void setupInterrupt();
     // radiation count used in interrupt routine
     static int volatile _radiationCount;
     // noise count used in interrupt routine
@@ -91,4 +93,21 @@ class RadiationWatch
     static void _onRadiationHandler();
     static void _onNoiseHandler();
 };
-#endif
+
+/* Secure that the setupInterrupt() is only defined and compiled once.
+ * To be able to change the setupInterrupt() during compile time, the
+ * function must be define in the header file.  Every include from
+ * outside of a sketch must define LIBCALL_RADIATIONWATCH to avoid
+ * linker error. */
+#ifndef LIBCALL_RADIATIONWATCH
+/* Default: Use external interrupts utilizing the attachInterrupt()
+ * function from the Arduino IDE.  You must connect the Pocket Geiger
+ * signals to an interrupt enabled pin, e.g. pin 2 and 3 on the
+ * Arduino UNO. */
+void RadiationWatch::setupInterrupt() {
+  attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
+  attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, FALLING);
+}
+#endif // LIBCALL_RADIATIONWATCH
+
+#endif // RadiationWatch_h
