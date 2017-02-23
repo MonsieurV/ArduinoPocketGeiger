@@ -100,6 +100,17 @@ class RadiationWatch
  * outside of a sketch must define LIBCALL_RADIATIONWATCH to avoid
  * linker error. */
 #ifndef LIBCALL_RADIATIONWATCH
+#ifdef EnableInterrupt_h
+/* EnableInterrupt support: Use pin change interrupts utilizing the
+ * EnableInterrupt library.  This works with arbitrary pins as input
+ * for the Pocket Geiger signals.  In your sketch, EnableInterrupt.h
+ * must be included before this file to enable EnableInterrupt
+ * support. */
+void RadiationWatch::setupInterrupt() {
+  enableInterrupt(_signPin, _onRadiationHandler, FALLING);
+  enableInterrupt(_noisePin, _onNoiseHandler, FALLING);
+}
+#else
 /* Default: Use external interrupts utilizing the attachInterrupt()
  * function from the Arduino IDE.  You must connect the Pocket Geiger
  * signals to an interrupt enabled pin, e.g. pin 2 and 3 on the
@@ -108,6 +119,7 @@ void RadiationWatch::setupInterrupt() {
   attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
   attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, FALLING);
 }
+#endif
 #endif // LIBCALL_RADIATIONWATCH
 
 #endif // RadiationWatch_h
