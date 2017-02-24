@@ -107,7 +107,7 @@ void RadiationWatch::registerNoiseCallback(void (*callback)(void))
 
 unsigned long RadiationWatch::integrationTime()
 {
-  return (historyLength * HISTORY_UNIT * 1000
+  return (historyLength * HISTORY_UNIT * 1000UL
           + previousTime - previousHistoryTime);
 }
 
