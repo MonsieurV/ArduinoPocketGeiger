@@ -35,19 +35,29 @@ class RadiationWatch
     void setup();
     void loop();
 
-    // Return the duration of the measurement (ms).
-    unsigned long duration();
+    /* Integration time of traced radiation count (in milliseconds),
+     * grows gradually to HISTORY_LENGTH * HISTORY_UNIT * 1000. */
+    unsigned long integrationTime();
     /* Return the current radiation count, that is the number of Gamma ray
      * since the last call to loop(), which reset the current count to 0. */
     int currentRadiationCount();
+    /* Return the radiation count, that is the number of Gamma ray occured
+     * during the integration time. */
+    unsigned long radiationCount();
     // Return the number of radiation count by minute.
-    float cpm();
+    double cpm();
     // Return the radiation dose, exprimed in Sievert (uSv/h).
-    float uSvh();
+    double uSvh();
     /* Return the error of the measurement (uSv/h).
      * The range of precision of the measurement is:
      * [ uSvh-uSvhError, uSvh+uSvhError ]. */
-    float uSvhError();
+    double uSvhError();
+    // Dose coefficient (cpm = uSv x alpha)
+#if __cplusplus >= 200704 // constexpr is requiered on C++11
+    static constexpr double kAlpha = 53.032;
+#else
+    static const double kAlpha = 53.032;
+#endif
 
     /* Register a function that will be called when a radiation pulse
      * is detected. */
@@ -55,11 +65,6 @@ class RadiationWatch
     /* Register a function that will be called when a noise pulse
      * is detected. */
     void registerNoiseCallback(void (*callback)(void));
-
-    // Get CSV-formatted keys for the status values.
-    char* csvKeys();
-    // Get CSV-formatted current values.
-    char* csvStatus();
 
   protected:
     // History of count rates.
@@ -72,19 +77,18 @@ class RadiationWatch
     byte historyIndex;
     // Current length of count history
     byte historyLength;
-    // Start time of measurement (milliseconds) used for CSV.
-    unsigned long csvStartTime;
-    // Elapsed time of measurement used for CPM calculation (in minutes).
-    inline float cpmTime()
-    {
-      return (historyLength * HISTORY_UNIT
-              + (previousTime - previousHistoryTime) / 1000.0) / 60.0;
-    }
     // Pin settings.
     byte _signPin;
     byte _noisePin;
     // User callbacks.
     void (*_radiationCallback)(void);
     void (*_noiseCallback)(void);
+    // radiation count used in interrupt routine
+    static int volatile _radiationCount;
+    // noise count used in interrupt routine
+    static int volatile _noiseCount;
+    // interrupt handler
+    static void _onRadiationHandler();
+    static void _onNoiseHandler();
 };
 #endif

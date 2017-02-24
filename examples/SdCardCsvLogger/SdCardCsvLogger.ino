@@ -10,10 +10,39 @@ Same as SerialCsvLogger, but store the CSV values to an SD card.
 RadiationWatch radiationWatch;
 const byte sdCardPin = 4;
 File dataFile;
+unsigned long csvStartTime;
+
+void csvKeys(Print &print=Serial)
+{
+  // inizialise start time
+  csvStartTime = millis();
+  // Write CSV keys to a print class (default print class is Serial).
+  print.println("time(ms),count,cpm,uSv/h,uSv/hError");
+}
+
+void csvStatus(RadiationWatch radiationWatch, Print &print=Serial)
+{
+  // Write CSV to a print class (default print class is Serial).
+  // time(ms)
+  print.print(millis() - csvStartTime);
+  print.print(',');
+  // count
+  print.print(radiationWatch.radiationCount());
+  print.print(',');
+  // cpm
+  print.print(radiationWatch.cpm(), 3);
+  print.print(',');
+  // uSv/h
+  print.print(radiationWatch.uSvh(), 3);
+  print.print(',');
+  // uSv/hError
+  print.print(radiationWatch.uSvhError(), 3);
+  print.println("");
+}
 
 void onRadiationPulse() {
   // For each radiation write the current values to the SD card in CSV.
-  dataFile.println(radiationWatch.csvStatus());
+  csvStatus(radiationWatch, dataFile);
   dataFile.flush();
 }
 
@@ -32,8 +61,8 @@ void setup()
   }
   radiationWatch.setup();
   // Print the CSV keys and the initial values.
-  dataFile.println(radiationWatch.csvKeys());
-  dataFile.println(radiationWatch.csvStatus());
+  csvKeys(dataFile);
+  csvStatus(radiationWatch, dataFile);
   dataFile.flush();
   // Register the callback.
   radiationWatch.registerRadiationCallback(&onRadiationPulse);

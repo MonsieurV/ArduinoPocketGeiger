@@ -13,21 +13,16 @@
  * Yoan Tournade <yoan@ytotech.com>
  */
 #include "RadiationWatch.h"
-#if !defined(ARDUINO_ARCH_AVR) && !defined(ESP8266)
-#include <avr/dtostrf.h>
-#endif
 
-int volatile _radiationCount = 0;
-int volatile _noiseCount = 0;
-// Message buffer for output.
-char _msg[60];
+int volatile RadiationWatch::_radiationCount = 0;
+int volatile RadiationWatch::_noiseCount = 0;
 
-void _onRadiationHandler()
+void RadiationWatch::_onRadiationHandler()
 {
   _radiationCount++;
 }
 
-void _onNoiseHandler()
+void RadiationWatch::_onNoiseHandler()
 {
   _noiseCount++;
 }
@@ -37,7 +32,6 @@ RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
 {
   previousTime = 0;
   previousHistoryTime = 0;
-  csvStartTime = 0;
   _count = 0;
   historyIndex = 0;
   historyLength = 0;
@@ -55,7 +49,6 @@ void RadiationWatch::setup()
   // Init measurement time.
   previousTime = millis();
   previousHistoryTime = millis();
-  csvStartTime = millis();
   // Attach interrupt handlers.
   attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
   attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, FALLING);
@@ -112,31 +105,10 @@ void RadiationWatch::registerNoiseCallback(void (*callback)(void))
   _noiseCallback = callback;
 }
 
-char* RadiationWatch::csvKeys()
+unsigned long RadiationWatch::integrationTime()
 {
-  // CSV-formatting for output.
-  return "time(ms),count,cpm,uSv/h,uSv/hError";
-}
-
-char* RadiationWatch::csvStatus()
-{
-  // Format message. We use dtostrf() to format float to string.
-  char cpmBuff[8];
-  char uSvBuff[8];
-  char uSvdBuff[8];
-  dtostrf(cpm(), -1, 3, cpmBuff);
-  dtostrf(uSvh(), -1, 3, uSvBuff);
-  dtostrf(uSvhError(), -1, 3, uSvdBuff);
-  sprintf(_msg, "%lu,%d,%s,%s,%s",
-          duration(), currentRadiationCount(), cpmBuff, uSvBuff, uSvdBuff);
-  return _msg;
-}
-
-unsigned long RadiationWatch::duration()
-{
-  // Elapsed time of measurement (milliseconds).
-  // Will overflow after days 49 of measurement.
-  return previousTime - csvStartTime;
+  return (historyLength * HISTORY_UNIT * 1000UL
+          + previousTime - previousHistoryTime);
 }
 
 int RadiationWatch::currentRadiationCount() {
@@ -146,22 +118,24 @@ int RadiationWatch::currentRadiationCount() {
   return currentCount;
 }
 
-float RadiationWatch::cpm()
-{
-  // cpm = uSv x alpha
-  float min = cpmTime();
-  return (min > 0) ? _count / min : 0;
+unsigned long RadiationWatch::radiationCount() {
+  return _count;
 }
 
-static const float kAlpha = 53.032;
+double RadiationWatch::cpm()
+{
+  // cpm = uSv x alpha
+  double min = integrationTime() / 60000.0;
+  return (min > 0) ? radiationCount() / min : 0;
+}
 
-float RadiationWatch::uSvh()
+double RadiationWatch::uSvh()
 {
   return cpm() / kAlpha;
 }
 
-float RadiationWatch::uSvhError()
+double RadiationWatch::uSvhError()
 {
-  float min = cpmTime();
-  return (min > 0) ? sqrt(_count) / min / kAlpha : 0;
+  double min = integrationTime() / 60000.0;
+  return (min > 0) ? sqrt(radiationCount()) / min / kAlpha : 0;
 }
