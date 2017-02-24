@@ -87,6 +87,8 @@ Happy hacking!
 
 Created upon the [thomasaw](https://github.com/thomasaw/RadiationWatch) and [Tourmal](https://github.com/Toumal/RadiationWatch) libraries, themselves based on the [Radiation Watch sample code](http://radiation-watch.sakuraweb.com/share/ARDUINO.zip).
 
+(@puuu)[https://github.com/puuu] (contributed)[https://github.com/MonsieurV/ArduinoPocketGeiger/graphs/contributors] some major enhancements to the library structure (see #4 and #5).
+
 ### Contribute
 
 Feel free to [open a new ticket](https://github.com/MonsieurV/ArduinoPocketGeiger/issues/new) or submit a PR to improve the lib.
