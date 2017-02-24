@@ -53,7 +53,11 @@ class RadiationWatch
      * [ uSvh-uSvhError, uSvh+uSvhError ]. */
     double uSvhError();
     // Dose coefficient (cpm = uSv x alpha)
+#if __cplusplus >= 200704 // constexpr is requiered on C++11
+    static constexpr double kAlpha = 53.032;
+#else
     static const double kAlpha = 53.032;
+#endif
 
     /* Register a function that will be called when a radiation pulse
      * is detected. */
