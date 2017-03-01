@@ -1,7 +1,15 @@
 /*
 This example is basically the same as SimpleSerialPrinter but utilize
-the EnableInterrupt library.  EnableInterrupt make pin change
-interrupts available and thus allows to use arbitrary pins.
+the EnableInterrupt library.
+
+The EnableInterrupt library make pin change interrupts available and
+thus allows to use arbitrary pins.
+
+See a list of pins supported here:
+https://github.com/GreyGnome/EnableInterrupt/wiki/Usage#pin--port-bestiary
+
+You can install the library from the Arduino Library Manager:
+http://www.arduinolibraries.info/libraries/enable-interrupt
 */
 
 // EnableInterrupt from https://github.com/GreyGnome/EnableInterrupt
