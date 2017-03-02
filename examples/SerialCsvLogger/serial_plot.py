@@ -37,7 +37,7 @@ plt.show()
 with serial.Serial(port, 9600) as ser:
     print('Listening to %s' % (ser.name))
     while 1:
-        line = ser.readline()[:-1]
+        line = ser.readline()[:-1].decode()
         print(line)
         (time, count, cpm, uSvh, uSvhError) = line.split(',')
         if time == 'time(ms)':
