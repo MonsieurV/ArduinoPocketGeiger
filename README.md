@@ -12,7 +12,9 @@ Learn more about the Pocket Geiger counter on the Radiation Watch [FAQ](http://w
 
 ### Install the library
 
-Download [the library as a zip](https://github.com/MonsieurV/ArduinoPocketGeiger/archive/master.zip), extract it and put it in your Arduino `libraries` folder. (see [instructions](https://www.arduino.cc/en/Guide/Libraries))
+Go the Arduino Library Manager and search for [RadiationWatch](http://arduinolibraries.info/libraries/radiation-watch): install, that's it!
+
+Alternatively download [the library as a zip](https://github.com/MonsieurV/ArduinoPocketGeiger/archive/master.zip), extract it and put it in your Arduino `libraries` folder. (see [instructions](https://www.arduino.cc/en/Guide/Libraries))
 
 ### Wire your Pocket Geiger board to your Arduino
 
