@@ -52,3 +52,4 @@ with serial.Serial(port, 9600) as ser:
         axes.relim()
         axes.autoscale_view(True,True,True)
         plt.draw()
+        fig.canvas.flush_events()
