@@ -47,6 +47,9 @@ void RadiationWatch::setup()
   // Initialize _countHistory[].
   for(int i = 0; i < HISTORY_LENGTH; i++)
     _countHistory[i] = 0;
+  _count = 0;
+  historyIndex = 0;
+  historyLength = 0;
   // Init measurement time.
   previousTime = millis();
   previousHistoryTime = millis();
