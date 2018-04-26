@@ -51,7 +51,7 @@ Your done! Enjoy your -hopefully- low exposure to Gamma radiation.
 
 ### Plot in real-time with Python
 
-Load the `RadiationWatch` -> `SerialCsvLogger` sketch to your Arduino. Then launch the Python script [`serial_plot.py`](/examples/SerialCsvLogger/sserial_plot.py).
+Load the `RadiationWatch` -> `SerialCsvLogger` sketch to your Arduino. Then launch the Python script [`serial_plot.py`](/examples/SerialCsvLogger/serial_plot.py).
 
 You need Python installed with [matplotlib](http://matplotlib.org/) and [pyserial](https://github.com/pyserial/pyserial). You may need to set the serial port corresponding to your Arduino in the Python script.
 
