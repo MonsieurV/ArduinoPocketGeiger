@@ -61,7 +61,7 @@ The script will output the radiation level in real-time.
 
 ### Log the results to an SD card
 
-You'll need the [Arduino Ethernet shield](https://www.arduino.cc/en/Main/ArduinoEthernetShield) (recommanded) or the [SparkFun microSD shield](https://www.sparkfun.com/products/12761).
+You'll need the [Arduino Ethernet shield](https://www.arduino.cc/en/Main/ArduinoEthernetShield) (recommended) or the [SparkFun microSD shield](https://www.sparkfun.com/products/12761).
 
 Load the `RadiationWatch` -> `SdCardCsvLogger` sketch to your Arduino. The radiation measurements will be stored in a `rad.csv` file on the microSD card, so you can then retrieve and process them later.
 
