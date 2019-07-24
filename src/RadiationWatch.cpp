@@ -18,6 +18,24 @@
 int volatile RadiationWatch::_radiationCount = 0;
 int volatile RadiationWatch::_noiseCount = 0;
 
+#if defined(ESP8266)
+// For ESP8266 boards,
+// (https://arduino.stackexchange.com/questions/34496/how-to-have-compiler-know-whether-arduino-or-esp8266)
+// we add ICACHE_RAM_ATTR to move the interrupt handler to RAM.
+// (Instead of flash)
+// See:
+// https://arduino-esp8266.readthedocs.io/en/latest/faq/a02-my-esp-crashes.html#other-causes-for-crashes
+// https://hackaday.io/project/28220-one-tube-nixie-clock/log/71448-progress (Interrupt Handling)
+void ICACHE_RAM_ATTR RadiationWatch::_onRadiationHandler()
+{
+  _radiationCount++;
+}
+
+void ICACHE_RAM_ATTR RadiationWatch::_onNoiseHandler()
+{
+  _noiseCount++;
+}
+#else
 void RadiationWatch::_onRadiationHandler()
 {
   _radiationCount++;
@@ -27,6 +45,7 @@ void RadiationWatch::_onNoiseHandler()
 {
   _noiseCount++;
 }
+#endif
 
 RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
     _signPin(signPin), _noisePin(noisePin)
