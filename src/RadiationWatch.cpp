@@ -18,7 +18,7 @@
 int volatile RadiationWatch::_radiationCount = 0;
 int volatile RadiationWatch::_noiseCount = 0;
 
-#if defined(ESP8266)
+#ifdef ESP8266
 // For ESP8266 boards,
 // (https://arduino.stackexchange.com/questions/34496/how-to-have-compiler-know-whether-arduino-or-esp8266)
 // we add ICACHE_RAM_ATTR to move the interrupt handler to RAM.
