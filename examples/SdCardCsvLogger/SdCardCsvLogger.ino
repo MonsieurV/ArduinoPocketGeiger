@@ -1,13 +1,23 @@
  // You can change here the history length to reduce the memory footprint.
 #define HISTORY_LENGTH 200
 #include "RadiationWatch.h"
+// We use the SD library from Arduino.
+// https://www.arduino.cc/en/Reference/SD
 #include <SD.h>
 #include <SPI.h>
 /*
 Same as SerialCsvLogger, but store the CSV values to an SD card.
+
+This example has been tested with the Ethernet shield from Arduino as the SD card writter.
+It should work with all shields compatible with the SD library, which use SPI
+as the interface with the SD reader/writer.
 */
 
 RadiationWatch radiationWatch;
+// The SD card pin varies from one SD shield to another.
+// Arduino Ethenet shield uses pin 4 (see https://store.arduino.cc/arduino-ethernet-shield-2)
+// Sparkfun microSD shield uses pin 8 (see https://www.sparkfun.com/products/12761)
+// Refer to your SD shield/module documentation to know which pin to use.
 const byte sdCardPin = 4;
 File dataFile;
 unsigned long csvStartTime;
