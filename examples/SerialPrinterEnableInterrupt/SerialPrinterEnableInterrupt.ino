@@ -18,8 +18,8 @@ http://www.arduinolibraries.info/libraries/enable-interrupt
 #include "RadiationWatch.h"
 
 // Use any pin as you like
-// Here: signPin = 5, noisePin = 6
-RadiationWatch radiationWatch(5, 6);
+// Here: signPin = 2, noisePin = 3
+RadiationWatch radiationWatch(2, 3);
 
 void onRadiation()
 {
