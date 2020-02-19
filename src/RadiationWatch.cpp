@@ -61,7 +61,13 @@ RadiationWatch::RadiationWatch(byte signPin, byte noisePin):
 
 void RadiationWatch::setup()
 {
+  // Enable the ~20kΩ pull-up resistor for radiation and noise
+  // pins.
+  // For pullup resistors on Arduino, see https://www.arduino.cc/en/Tutorial/DigitalPins
   pinMode(_signPin, INPUT_PULLUP);
+  // The noise signal is low by default (no noise), so we could install a pull-down resistor.
+  // However this is not available on Arduino platform, so we goes with a pull-up resistor.
+  // As the PocketGeiger board pull down the noise signal to low if working, this is not an issue.
   pinMode(_noisePin, INPUT_PULLUP);
   // Initialize _countHistory[].
   for(int i = 0; i < HISTORY_LENGTH; i++)

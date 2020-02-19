@@ -22,6 +22,7 @@
 #endif
 // Duration of each history array cell (seconds).
 #define HISTORY_UNIT 6
+// Main loop processing period. In milliseconds.
 #define PROCESS_PERIOD 160
 #include "Arduino.h"
 
@@ -94,6 +95,15 @@ class RadiationWatch
     static void _onNoiseHandler();
 };
 
+/* Notes on the PocketGeiger pulse listening.
+ * Raw data of Radiation Pulse: Not-detected -> High, Detected -> Low.
+ * --> We listen on falling edges.
+ * Raw data of Noise Pulse: Not-detected -> Low, Detected -> High.
+ * --> We listen on rising edges.
+ * Source:
+ * https://cdn.sparkfun.com/assets/learn_tutorials/1/4/3/GeigerCounterType5_connect_with_microcomputer.pdf
+ */
+
 /* Secure that the setupInterrupt() is only defined and compiled once.
  * To be able to change the setupInterrupt() during compile time, the
  * function must be define in the header file. Every include from
@@ -108,7 +118,7 @@ class RadiationWatch
  * support. */
 void RadiationWatch::setupInterrupt() {
   enableInterrupt(_signPin, _onRadiationHandler, FALLING);
-  enableInterrupt(_noisePin, _onNoiseHandler, FALLING);
+  enableInterrupt(_noisePin, _onNoiseHandler, RISING);
 }
 #else
 /* Default: Use external interrupts utilizing the attachInterrupt()
@@ -117,7 +127,7 @@ void RadiationWatch::setupInterrupt() {
  * Arduino UNO. */
 void RadiationWatch::setupInterrupt() {
   attachInterrupt(digitalPinToInterrupt(_signPin), _onRadiationHandler, FALLING);
-  attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, FALLING);
+  attachInterrupt(digitalPinToInterrupt(_noisePin), _onNoiseHandler, RISING);
 }
 #endif
 #endif // LIBCALL_RADIATIONWATCH
