@@ -16,6 +16,8 @@ Go the Arduino Library Manager and search for [RadiationWatch](http://arduinolib
 
 Alternatively download [the library as a zip](https://github.com/MonsieurV/ArduinoPocketGeiger/archive/master.zip), extract it and put it in your Arduino `libraries` folder. (see [instructions](https://www.arduino.cc/en/Guide/Libraries))
 
+If you link the command-line, check [`CLI.md`](/CLI.md) for [`arduino-cli`](https://github.com/arduino/arduino-cli) installation and getting started instructions.
+
 ### Wire your Pocket Geiger board to your Arduino
 
 First connect your Pochet Geiger Type 5 board to your Arduino. By default, the binding used is as follow:
@@ -40,6 +42,8 @@ RadiationWatch radiationWatch(signPin, noisePin);
 ```
 
 [Pocket Geiger Type 5 interface specification](http://www.radiation-watch.co.uk/uploads/5t.pdf).
+
+Look at the [buildlogs folder](/buildlogs/README.md) for more step by step instructions.
 
 ### Launch the Serial printer example
 
