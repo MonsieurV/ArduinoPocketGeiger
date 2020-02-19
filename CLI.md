@@ -31,7 +31,7 @@ arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:uno examples/SimpleSerialP
 
 Look at the serial output of the sketch (you may need to use the reset button of your Arduino board for the sketch to launch properly):
 ```sh
-tail -f /dev/ttyACM0
+cat /dev/ttyACM0
 ```
 Example output:
 ```
@@ -68,7 +68,7 @@ arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:uno examples/SerialPrinter
 
 Look at the serial output of the sketch (you may need to use the reset button of your Arduino board for the sketch to launch properly):
 ```sh
-tail -f /dev/ttyACM0
+cat /dev/ttyACM0
 ```
 Example output:
 ```
