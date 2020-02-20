@@ -31,6 +31,8 @@ http://www.arduinolibraries.info/libraries/enable-interrupt
 RadiationWatch radiationWatch1(2, 3);
 // Second Pocket Geiger: signPin = 4, noisePin = 5
 RadiationWatch radiationWatch2(4, 5);
+// Fairness counter.
+unsigned int counter = 0;
 
 void onRadiation1()
 {
@@ -74,6 +76,15 @@ void setup()
 
 void loop()
 {
-  radiationWatch1.loop();
-  radiationWatch2.loop();
+  // Just to be sure both processing loops get
+  // equal amount of processing. Should not be useful/has
+  // any effect, except maybe at high radiation count levels.
+  if (counter % 2 == 0) {
+    radiationWatch1.loop();
+    radiationWatch2.loop();
+  } else {
+    radiationWatch2.loop();
+    radiationWatch1.loop();
+  }
+  counter++;
 }
